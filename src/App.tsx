@@ -1,3 +1,4 @@
+// HRPlatform v1.0 - Build fix
 import React, { useState } from 'react';
 import './index.css';
 
