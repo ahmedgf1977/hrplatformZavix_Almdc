@@ -134,157 +134,82 @@ const MODULES = [
 ];
 
 // ── Login ──────────────────────────────────────────────────
-function Login({ onLogin }: { onLogin: (id: string) => void }) {
-  const [hov, setHov] = useState<string | null>(null);
-  return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 24,
-        background:
-          'linear-gradient(135deg,#0d1f2d 0%,#1e3a4a 50%,#0d2a35 100%)',
-      }}
-    >
-      <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <div
-          style={{
-            width: 64,
-            height: 64,
-            background: '#0d9488',
-            borderRadius: 16,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 28,
-            fontWeight: 900,
-            color: 'white',
-            margin: '0 auto 16px',
-            boxShadow: '0 8px 32px #0d948860',
-          }}
-        >
-          HR
+ 
+  const API_URL = 'https://hrplatform-api-yq06.onrender.com'
+
+  function Login({ onLogin }: { onLogin: (user:any, token:string) => void }) {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
+  
+    const handleLogin = async () => {
+      if (!email || !password) { setError('Ingresa tu correo y contraseña'); return }
+      setLoading(true); setError('')
+      try {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.message || 'Credenciales inválidas')
+        localStorage.setItem('hrp_token', data.access_token)
+        onLogin(data.user, data.access_token)
+      } catch (err: any) {
+        setError(err.message || 'Error al conectar con el servidor')
+      } finally {
+        setLoading(false)
+      }
+    }
+  
+    return (
+      <div style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,background:'linear-gradient(135deg,#0d1f2d 0%,#1e3a4a 50%,#0d2a35 100%)'}}>
+        <div style={{textAlign:'center',marginBottom:32}}>
+          <div style={{width:64,height:64,background:'#0d9488',borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',fontSize:28,fontWeight:900,color:'white',margin:'0 auto 16px',boxShadow:'0 8px 32px #0d948860'}}>HR</div>
+          <h1 style={{color:'white',fontSize:26,fontWeight:800,margin:'0 0 6px'}}>HRPlatform</h1>
+          <p style={{color:'#64a09a',fontSize:13,margin:0}}>Zavix Brands · Almacenes DC</p>
         </div>
-        <h1
-          style={{
-            color: 'white',
-            fontSize: 26,
-            fontWeight: 800,
-            margin: '0 0 6px',
-          }}
-        >
-          HRPlatform
-        </h1>
-        <p style={{ color: '#64a09a', fontSize: 13, margin: 0 }}>
-          Zavix Brands · Almacenes DC
-        </p>
-      </div>
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 420,
-          background: 'rgba(255,255,255,.04)',
-          border: '0.5px solid rgba(255,255,255,.1)',
-          borderRadius: 16,
-          padding: 24,
-        }}
-      >
-        <p
-          style={{
-            color: 'rgba(255,255,255,.4)',
-            fontSize: 11,
-            textAlign: 'center',
-            marginBottom: 16,
-            letterSpacing: 2,
-            textTransform: 'uppercase',
-          }}
-        >
-          Selecciona tu perfil
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {USERS.map((u) => (
-            <div
-              key={u.id}
-              onClick={() => onLogin(u.id)}
-              onMouseEnter={() => setHov(u.id)}
-              onMouseLeave={() => setHov(null)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '12px 14px',
-                borderRadius: 10,
-                cursor: 'pointer',
-                transition: 'all .15s',
-                border: `1.5px solid ${
-                  hov === u.id ? u.color : 'rgba(255,255,255,.08)'
-                }`,
-                background:
-                  hov === u.id ? u.color + '20' : 'rgba(255,255,255,.02)',
-              }}
-            >
-              <div
-                style={{
-                  width: 42,
-                  height: 42,
-                  background: u.color + '30',
-                  borderRadius: 10,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                  flexShrink: 0,
-                }}
-              >
-                {u.emoji}
+        <div style={{width:'100%',maxWidth:380,background:'rgba(255,255,255,.06)',border:'0.5px solid rgba(255,255,255,.12)',borderRadius:16,padding:28}}>
+          <p style={{color:'rgba(255,255,255,.5)',fontSize:11,textAlign:'center',marginBottom:20,letterSpacing:2,textTransform:'uppercase'}}>Iniciar Sesión</p>
+          <div style={{marginBottom:12}}>
+            <p style={{margin:'0 0 4px',color:'rgba(255,255,255,.5)',fontSize:11}}>Correo institucional</p>
+            <input
+              type="email" value={email} onChange={e=>setEmail(e.target.value)}
+              placeholder="usuario@zavixbrands.com"
+              style={{width:'100%',background:'rgba(255,255,255,.08)',border:'0.5px solid rgba(255,255,255,.15)',borderRadius:8,padding:'10px 12px',color:'white',fontSize:13,outline:'none',boxSizing:'border-box'}}
+            />
+          </div>
+          <div style={{marginBottom:16}}>
+            <p style={{margin:'0 0 4px',color:'rgba(255,255,255,.5)',fontSize:11}}>Contraseña</p>
+            <input
+              type="password" value={password} onChange={e=>setPassword(e.target.value)}
+              onKeyDown={e=>e.key==='Enter'&&handleLogin()}
+              placeholder="••••••••"
+              style={{width:'100%',background:'rgba(255,255,255,.08)',border:'0.5px solid rgba(255,255,255,.15)',borderRadius:8,padding:'10px 12px',color:'white',fontSize:13,outline:'none',boxSizing:'border-box'}}
+            />
+          </div>
+          {error && <div style={{background:'#fee2e2',color:'#991b1b',borderRadius:8,padding:'8px 12px',fontSize:12,marginBottom:12}}>{error}</div>}
+          <button
+            onClick={handleLogin} disabled={loading}
+            style={{width:'100%',background:loading?'#64748b':'#0d9488',color:'white',border:'none',borderRadius:8,padding:'11px',fontSize:13,fontWeight:600,cursor:loading?'not-allowed':'pointer',transition:'background .2s'}}>
+            {loading ? 'Conectando...' : 'Entrar →'}
+          </button>
+          <div style={{marginTop:16,padding:'10px 12px',background:'rgba(255,255,255,.04)',borderRadius:8,border:'0.5px solid rgba(255,255,255,.08)'}}>
+            <p style={{margin:'0 0 4px',color:'rgba(255,255,255,.4)',fontSize:10,textTransform:'uppercase',letterSpacing:1}}>Accesos de prueba</p>
+            {[['brenda.alvarez@zavixbrands.com','Admin RRHH'],['ahmed.garcia@zavixbrands.com','Super Admin']].map(([e,r])=>(
+              <div key={e} onClick={()=>{setEmail(e);setPassword('hrplatform2025')}} style={{cursor:'pointer',padding:'3px 0'}}>
+                <span style={{color:'#0d9488',fontSize:11}}>{e}</span>
+                <span style={{color:'rgba(255,255,255,.3)',fontSize:10}}> — {r}</span>
               </div>
-              <div style={{ flex: 1 }}>
-                <p
-                  style={{
-                    margin: 0,
-                    color: 'white',
-                    fontWeight: 600,
-                    fontSize: 13,
-                  }}
-                >
-                  {u.name}
-                </p>
-                <p
-                  style={{
-                    margin: '1px 0',
-                    color: 'rgba(255,255,255,.45)',
-                    fontSize: 11,
-                  }}
-                >
-                  {u.role}
-                </p>
-                <p
-                  style={{
-                    margin: 0,
-                    color: 'rgba(255,255,255,.25)',
-                    fontSize: 10,
-                    fontStyle: 'italic',
-                  }}
-                >
-                  {u.desc}
-                </p>
-              </div>
-              <span style={{ color: u.color, fontSize: 18 }}>→</span>
-            </div>
-          ))}
+            ))}
+            <p style={{margin:'4px 0 0',color:'rgba(255,255,255,.3)',fontSize:10}}>Contraseña: hrplatform2025</p>
+          </div>
         </div>
+        <p style={{color:'rgba(255,255,255,.15)',fontSize:10,marginTop:20}}>HRPlatform v1.0 · Producción</p>
       </div>
-      <p
-        style={{ color: 'rgba(255,255,255,.15)', fontSize: 10, marginTop: 20 }}
-      >
-        HRPlatform v1.0 · Producción · Mayo 2025
-      </p>
-    </div>
-  );
-}
+    )
+  }
 
 // ── Sidebar ────────────────────────────────────────────────
 function Sidebar({
@@ -6705,13 +6630,235 @@ function Usuarios() {
     </div>
   );
 }
+const API_BASE = 'https://hrplatform-api-yq06.onrender.com/api'
+
+function Alta() {
+  const [step, setStep] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
+  const [form, setForm] = useState({
+    firstName:'', lastName1:'', lastName2:'',
+    email:'', phone:'',
+    position:'', department:'', area:'',
+    company:'zavix', contractType:'Tiempo Indeterminado',
+    schedule:'L-V 9-18h', startDate:'',
+    manager:'', curp:'', rfc:'', imss:'', clabe:'', bank:'',
+    civilStatus:'Soltero/a', education:'Licenciatura', career:'',
+    address:'', emergencyContact:'',
+  })
+
+  const f = (k:string, v:string) => setForm(p=>({...p,[k]:v}))
+
+  const STEPS = ['Datos Personales','Datos Laborales','Datos Fiscales','Confirmación']
+
+  const handleSubmit = async () => {
+    setLoading(true); setError('')
+    try {
+      const token = localStorage.getItem('hrp_token')
+      const res = await fetch(`${API_BASE}/employees`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
+        body: JSON.stringify({ ...form, name:`${form.firstName} ${form.lastName1} ${form.lastName2}`.trim(), status:'Activo' })
+      })
+      if (!res.ok) { const d = await res.json(); throw new Error(d.message||'Error al crear colaborador') }
+      setSuccess(true)
+    } catch(e:any) { setError(e.message) }
+    finally { setLoading(false) }
+  }
+
+  if (success) return (
+    <div style={{padding:'2rem',textAlign:'center'}} className="fade-in">
+      <div style={{width:72,height:72,borderRadius:'50%',background:'#d1fae5',display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 16px'}}>✅</div>
+      <h2 style={{margin:'0 0 8px',fontSize:18,fontWeight:700,color:'#065f46'}}>¡Colaborador dado de alta!</h2>
+      <p style={{color:'#64748b',marginBottom:20}}>{form.firstName} {form.lastName1} fue registrado exitosamente en {form.company==='zavix'?'Zavix Brands':'Almacenes DC'}</p>
+      <div style={{display:'flex',gap:10,justifyContent:'center'}}>
+        <button className="btn-primary" onClick={()=>{setSuccess(false);setStep(1);setForm({firstName:'',lastName1:'',lastName2:'',email:'',phone:'',position:'',department:'',area:'',company:'zavix',contractType:'Tiempo Indeterminado',schedule:'L-V 9-18h',startDate:'',manager:'',curp:'',rfc:'',imss:'',clabe:'',bank:'',civilStatus:'Soltero/a',education:'Licenciatura',career:'',address:'',emergencyContact:''})}}>+ Dar de alta otro</button>
+        <button className="btn-secondary" onClick={()=>{}}>Ver en Gestión de Personas</button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div style={{padding:'1.25rem',maxWidth:680,margin:'0 auto'}} className="fade-in">
+      <div style={{marginBottom:'1.25rem'}}>
+        <h2 style={{margin:0,fontSize:17,fontWeight:600}}>Alta de Colaboradores</h2>
+        <p style={{margin:'2px 0 0',fontSize:11,color:'#64748b'}}>Registro de nuevo colaborador · Zavix Brands & Almacenes DC</p>
+      </div>
+
+      {/* Stepper */}
+      <div style={{display:'flex',alignItems:'center',marginBottom:24}}>
+        {STEPS.map((s,i)=>(
+          <div key={i} style={{display:'flex',alignItems:'center',flex:i<STEPS.length-1?1:'auto'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+              <div style={{width:28,height:28,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:600,transition:'all .2s',
+                background:step>i+1?'#0d9488':step===i+1?'#0d9488':'white',
+                color:step>=i+1?'white':'#94a3b8',
+                border:`2px solid ${step>=i+1?'#0d9488':'#e2e8f0'}`}}>
+                {step>i+1?'✓':i+1}
+              </div>
+              <span style={{fontSize:9,color:step===i+1?'#0d9488':'#94a3b8',fontWeight:step===i+1?600:400,whiteSpace:'nowrap'}}>{s}</span>
+            </div>
+            {i<STEPS.length-1&&<div style={{flex:1,height:2,background:step>i+1?'#0d9488':'#e2e8f0',margin:'0 6px',marginBottom:14}}/>}
+          </div>
+        ))}
+      </div>
+
+      <div className="card">
+        {/* STEP 1 — Datos Personales */}
+        {step===1 && (
+          <div className="fade-in">
+            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>👤 Datos Personales</p>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:10}}>
+              <div><p className="label">Nombre(s) *</p><input className="input" value={form.firstName} onChange={e=>f('firstName',e.target.value)} placeholder="María"/></div>
+              <div><p className="label">Apellido Paterno *</p><input className="input" value={form.lastName1} onChange={e=>f('lastName1',e.target.value)} placeholder="García"/></div>
+              <div><p className="label">Apellido Materno</p><input className="input" value={form.lastName2} onChange={e=>f('lastName2',e.target.value)} placeholder="López"/></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+              <div><p className="label">Correo institucional *</p><input className="input" type="email" value={form.email} onChange={e=>f('email',e.target.value)} placeholder="m.garcia@zavixbrands.com"/></div>
+              <div><p className="label">Teléfono</p><input className="input" value={form.phone} onChange={e=>f('phone',e.target.value)} placeholder="+52 55 1234-5678"/></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10}}>
+              <div><p className="label">Estado Civil</p>
+                <select className="select" value={form.civilStatus} onChange={e=>f('civilStatus',e.target.value)}>
+                  {['Soltero/a','Casado/a','Divorciado/a','Viudo/a','Unión libre'].map(o=><option key={o}>{o}</option>)}
+                </select>
+              </div>
+              <div><p className="label">Nivel de Estudios</p>
+                <select className="select" value={form.education} onChange={e=>f('education',e.target.value)}>
+                  {['Primaria','Secundaria','Preparatoria','Técnico','Licenciatura','Maestría','Doctorado'].map(o=><option key={o}>{o}</option>)}
+                </select>
+              </div>
+              <div><p className="label">Carrera / Profesión</p><input className="input" value={form.career} onChange={e=>f('career',e.target.value)} placeholder="Administración"/></div>
+            </div>
+            <div style={{marginTop:10}}>
+              <p className="label">Domicilio</p>
+              <input className="input" value={form.address} onChange={e=>f('address',e.target.value)} placeholder="Calle, Número, Colonia, Ciudad"/>
+            </div>
+            <div style={{marginTop:10}}>
+              <p className="label">Contacto de Emergencia</p>
+              <input className="input" value={form.emergencyContact} onChange={e=>f('emergencyContact',e.target.value)} placeholder="Nombre — +52 55 0000-0000"/>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2 — Datos Laborales */}
+        {step===2 && (
+          <div className="fade-in">
+            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>💼 Datos Laborales</p>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+              <div><p className="label">Empresa *</p>
+                <select className="select" value={form.company} onChange={e=>f('company',e.target.value)}>
+                  <option value="zavix">Zavix Brands</option>
+                  <option value="adc">Almacenes DC</option>
+                </select>
+              </div>
+              <div><p className="label">Fecha de Ingreso *</p><input className="input" type="date" value={form.startDate} onChange={e=>f('startDate',e.target.value)}/></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+              <div><p className="label">Puesto *</p><input className="input" value={form.position} onChange={e=>f('position',e.target.value)} placeholder="Gerente de Ventas"/></div>
+              <div><p className="label">Área *</p><input className="input" value={form.area} onChange={e=>f('area',e.target.value)} placeholder="Ventas"/></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+              <div><p className="label">Departamento</p><input className="input" value={form.department} onChange={e=>f('department',e.target.value)} placeholder="Dirección Comercial"/></div>
+              <div><p className="label">Reporta a (Manager)</p><input className="input" value={form.manager} onChange={e=>f('manager',e.target.value)} placeholder="Director Comercial"/></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+              <div><p className="label">Tipo de Contrato</p>
+                <select className="select" value={form.contractType} onChange={e=>f('contractType',e.target.value)}>
+                  {['Tiempo Indeterminado','Tiempo Determinado','Por temporada','Cap. Inicial','Honorarios','Eventual'].map(o=><option key={o}>{o}</option>)}
+                </select>
+              </div>
+              <div><p className="label">Jornada</p>
+                <select className="select" value={form.schedule} onChange={e=>f('schedule',e.target.value)}>
+                  {['L-V 9-18h','L-V 8-17h','L-S 9-14h','Home Office','Híbrido 3/2','Turno Matutino','Turno Vespertino','Turno Nocturno'].map(o=><option key={o}>{o}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3 — Datos Fiscales */}
+        {step===3 && (
+          <div className="fade-in">
+            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>🏛 Datos Fiscales y Bancarios</p>
+            <div style={{background:'#fffbeb',border:'0.5px solid #fde68a',borderRadius:8,padding:'8px 12px',marginBottom:14}}>
+              <p style={{margin:0,fontSize:11,color:'#92400e'}}>⚠️ Estos datos son opcionales en el alta inicial. Pueden completarse después desde el expediente del colaborador.</p>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+              <div><p className="label">CURP (18 caracteres)</p><input className="input" value={form.curp} onChange={e=>f('curp',e.target.value.toUpperCase())} placeholder="XAXX010101HNEXXXA4" maxLength={18}/></div>
+              <div><p className="label">RFC (13 caracteres)</p><input className="input" value={form.rfc} onChange={e=>f('rfc',e.target.value.toUpperCase())} placeholder="XAXX010101AAA" maxLength={13}/></div>
+            </div>
+            <div style={{marginBottom:10}}>
+              <p className="label">Número IMSS</p>
+              <input className="input" value={form.imss} onChange={e=>f('imss',e.target.value)} placeholder="12345678901"/>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+              <div><p className="label">Banco</p>
+                <select className="select" value={form.bank} onChange={e=>f('bank',e.target.value)}>
+                  {['','BBVA','Banamex','Santander','HSBC','Banorte','Scotiabank','Inbursa','Azteca'].map(o=><option key={o} value={o}>{o||'Seleccionar...'}</option>)}
+                </select>
+              </div>
+              <div><p className="label">CLABE Interbancaria (18 dígitos)</p><input className="input" value={form.clabe} onChange={e=>f('clabe',e.target.value)} placeholder="012345678901234567" maxLength={18}/></div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 4 — Confirmación */}
+        {step===4 && (
+          <div className="fade-in">
+            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>✅ Confirmación</p>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
+              <div style={{background:'#f8fafc',borderRadius:8,padding:'12px'}}>
+                <p style={{margin:'0 0 8px',fontSize:11,fontWeight:600,color:'#64748b'}}>DATOS PERSONALES</p>
+                {[['Nombre',`${form.firstName} ${form.lastName1} ${form.lastName2}`],['Correo',form.email],['Teléfono',form.phone||'—'],['Estado Civil',form.civilStatus]].map(([l,v])=>(
+                  <div key={l} style={{display:'flex',gap:8,padding:'3px 0',borderBottom:'0.5px solid #e2e8f0'}}>
+                    <span style={{fontSize:10,color:'#94a3b8',minWidth:80}}>{l}</span>
+                    <span style={{fontSize:11,fontWeight:500}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{background:'#f8fafc',borderRadius:8,padding:'12px'}}>
+                <p style={{margin:'0 0 8px',fontSize:11,fontWeight:600,color:'#64748b'}}>DATOS LABORALES</p>
+                {[['Empresa',form.company==='zavix'?'Zavix Brands':'Almacenes DC'],['Puesto',form.position],['Área',form.area],['Ingreso',form.startDate],['Contrato',form.contractType]].map(([l,v])=>(
+                  <div key={l} style={{display:'flex',gap:8,padding:'3px 0',borderBottom:'0.5px solid #e2e8f0'}}>
+                    <span style={{fontSize:10,color:'#94a3b8',minWidth:80}}>{l}</span>
+                    <span style={{fontSize:11,fontWeight:500}}>{v||'—'}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {error && <div style={{background:'#fee2e2',color:'#991b1b',borderRadius:8,padding:'8px 12px',fontSize:12,marginBottom:12}}>{error}</div>}
+            <div style={{background:'#f0fdf4',border:'0.5px solid #bbf7d0',borderRadius:8,padding:'10px 12px'}}>
+              <p style={{margin:0,fontSize:11,color:'#065f46'}}>✅ Al dar de alta se creará el expediente digital, se enviará correo de bienvenida y se iniciará el proceso de onboarding automáticamente.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Navegación */}
+        <div style={{display:'flex',justifyContent:'space-between',marginTop:20,paddingTop:14,borderTop:'0.5px solid #f1f5f9'}}>
+          <button className={step===1?'btn-ghost':'btn-secondary'} onClick={()=>step>1&&setStep(s=>s-1)} disabled={step===1}>← Anterior</button>
+          {step<4
+            ? <button className="btn-primary" onClick={()=>{
+                if(step===1&&(!form.firstName||!form.lastName1||!form.email)){setError('Nombre, apellido y correo son obligatorios');return}
+                if(step===2&&(!form.position||!form.area||!form.startDate)){setError('Puesto, área y fecha de ingreso son obligatorios');return}
+                setError(''); setStep(s=>s+1)
+              }}>Siguiente →</button>
+            : <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
+                {loading?'Guardando...':'✓ Dar de Alta'}
+              </button>
+          }
+        </div>
+        {error&&step<4&&<p style={{color:'#ef4444',fontSize:11,marginTop:8,textAlign:'right'}}>{error}</p>}
+      </div>
+    </div>
+  )
+}
 
 const VIEWS: Record<string, () => React.ReactElement> = {
   dashboard: Dashboard,
   personas: Personas,
-  alta: () => (
-    <ModuloEnConstruccion nombre="Alta de Colaboradores" emoji="➕" />
-  ),
+  aalta: Alta,
   vacaciones: Vacaciones,
   onboarding: Onboarding,
   comunicados: Comunicados,
@@ -6731,19 +6878,12 @@ const VIEWS: Record<string, () => React.ReactElement> = {
 
 // ── App ────────────────────────────────────────────────────
 export default function App() {
-  const [user, setUser] = useState<any>(null);
-  const [active, setActive] = useState('dashboard');
-  const [company, setCompany] = useState('zavix');
+  const [user, setUser] = useState<any>(()=>{ try { const t=localStorage.getItem('hrp_token'); return t?JSON.parse(atob(t.split('.')[1])):null } catch{return null} })
+  const [token, setToken] = useState<string>(()=>localStorage.getItem('hrp_token')||'')
+  const [active, setActive] = useState('dashboard')
+  const [company, setCompany] = useState('zavix')
 
-  if (!user)
-    return (
-      <Login
-        onLogin={(id) => {
-          setUser(USERS.find((u) => u.id === id));
-          setActive('dashboard');
-        }}
-      />
-    );
+  if (!user) return <Login onLogin={(u,t)=>{ setUser(u); setToken(t); setActive('dashboard') }} />
 
   const ActiveView = VIEWS[active] || Dashboard;
 
@@ -6755,7 +6895,7 @@ export default function App() {
         setActive={setActive}
         company={company}
         setCompany={setCompany}
-        onLogout={() => setUser(null)}
+        onLogout={()=>{ setUser(null); setToken(''); localStorage.removeItem('hrp_token') }}
       />
       <main
         style={{
