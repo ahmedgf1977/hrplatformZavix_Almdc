@@ -220,7 +220,7 @@ function Sidebar({
   setCompany,
   onLogout,
 }: any) {
-  const mods = MODULES.filter((m) => m.roles.includes(user.id));
+  const mods = MODULES.filter((m) => const mods = MODULES.filter((m) => m.roles.includes(user.id) || m.roles.includes(user.role) || (user.role === 'admin' && m.roles.includes('brenda')) || (user.role === 'superadmin' && m.roles.includes('ahmed')));
   const co = COMPANIES.find((c) => c.id === company);
   return (
     <div
