@@ -944,7 +944,7 @@ function Personas() {
             colaboradores activos
           </p>
         </div>
-        <button className="btn-primary">+ Nuevo</button>
+        <button className="btn-primary" onClick={() => window.dispatchEvent(new CustomEvent('navigate', { detail: 'alta' }))}>+ Nuevo</button>
       </div>
       <div
         style={{
@@ -3733,7 +3733,7 @@ function Capacitaciones() {
             Cursos y formación · Zavix Brands & Almacenes DC
           </p>
         </div>
-        <button className="btn-primary">+ Nuevo Curso</button>
+        <button className="btn-primary" onClick={() => window.dispatchEvent(new CustomEvent('navigate', { detail: 'alta' }))}>+ Nuevo</button>
       </div>
 
       {/* KPIs */}
@@ -6883,7 +6883,11 @@ export default function App() {
   const [token, setToken] = useState<string>(()=>localStorage.getItem('hrp_token')||'')
   const [active, setActive] = useState('dashboard')
   const [company, setCompany] = useState('zavix')
-
+useEffect(() => {
+  const handler = (e: any) => setActive(e.detail);
+  window.addEventListener('navigate', handler);
+  return () => window.removeEventListener('navigate', handler);
+}, []);
   if (!user) return <Login onLogin={(u,t)=>{ setUser(u); setToken(t); setActive('dashboard') }} />
 
   const ActiveView = VIEWS[active] || Dashboard;
