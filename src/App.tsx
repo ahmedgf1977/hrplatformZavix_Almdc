@@ -6859,7 +6859,7 @@ function Alta() {
 const VIEWS: Record<string, () => React.ReactElement> = {
   dashboard: Dashboard,
   personas: Personas,
-  aalta: Alta,
+  alta: Alta,
   vacaciones: Vacaciones,
   onboarding: Onboarding,
   comunicados: Comunicados,
