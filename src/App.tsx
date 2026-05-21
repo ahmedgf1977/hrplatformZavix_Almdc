@@ -1,3 +1,6 @@
+html {
+  zoom: 1.4;
+}
 // HRPlatform v1.0 - Build fix
 import React, { useState, useEffect } from 'react';
 import './index.css';
