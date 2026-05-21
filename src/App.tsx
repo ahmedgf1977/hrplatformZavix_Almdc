@@ -168,9 +168,9 @@ const MODULES = [
   <div style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,background:'#f8fafc'}}>
     <div style={{textAlign:'center',marginBottom:32}}>
       <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:24,marginBottom:16}}>
-        <img src="/ZAVIX brands.jpg" alt="Zavix Brands" style={{height:48,objectFit:'contain'}}/>
+        <img src="/ZAVIX brands.jpg" alt="Zavix Brands" style={{height:80,objectFit:'contain'}}/>
         <div style={{width:1,height:40,background:'#e2e8f0'}}/>
-        <img src="/Almacenes DC.jpg" alt="Almacenes DC" style={{height:48,objectFit:'contain'}}/>
+        <img src="/Almacenes DC.jpg" alt="Almacenes DC" style={{height:80,objectFit:'contain'}}/>
       </div>
       <h1 style={{color:'#0f172a',fontSize:26,fontWeight:800,margin:'0 0 6px'}}>HRPlatform</h1>
       <p style={{color:'#64748b',fontSize:13,margin:0}}>Zavix Brands · Almacenes DC</p>
