@@ -3855,11 +3855,9 @@ function Capacitaciones() {
       obligatorio: false,
     },
   ]);
-
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ titulo:'', cat:'Soft Skills', duracion:'', obligatorio:false });
   const catColor: Record<string, string> = {
-    'Soft Skills': '#6366f1',
-    Herramientas: '#3b82f6',
-    Compliance: '#10b981',
   };
 
   return (
