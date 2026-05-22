@@ -1207,6 +1207,8 @@ function Vacaciones() {
   const [solicitudes, setSolicitudes] = useState(AUSENCIAS);
   const [tab, setTab] = useState('solicitudes');
   const [filtro, setFiltro] = useState('todos');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ emp:'', tipo:'Vacaciones', ini:'', fin:'', dias:1, motivo:'' });
 
   const aprobar = (id: number) =>
     setSolicitudes((p) =>
@@ -1241,7 +1243,7 @@ function Vacaciones() {
           <h2 className="page-title">Ausencias y Vacaciones</h2>
           <p className="page-sub">LFT México · Zavix Brands & Almacenes DC</p>
         </div>
-        <button className="btn-primary">+ Nueva Solicitud</button>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nueva Solicitud</button>
       </div>
 
       {/* KPIs */}
@@ -1297,7 +1299,44 @@ function Vacaciones() {
           </div>
         ))}
       </div>
-
+{showForm && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nueva Solicitud de Ausencia</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Colaborador *</p>
+        <input className="input" value={form.emp} onChange={e=>setForm({...form,emp:e.target.value})} placeholder="Ej. María García"/>
+      </div>
+      <div><p className="label">Tipo</p>
+        <select className="select" value={form.tipo} onChange={e=>setForm({...form,tipo:e.target.value})}>
+          {['Vacaciones','Permiso Personal','Licencia Médica'].map(o=><option key={o}>{o}</option>)}
+        </select>
+      </div>
+      <div><p className="label">Días</p>
+        <input className="input" type="number" min={1} value={form.dias} onChange={e=>setForm({...form,dias:Number(e.target.value)})}/>
+      </div>
+    </div>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Fecha inicio *</p>
+        <input className="input" type="date" value={form.ini} onChange={e=>setForm({...form,ini:e.target.value})}/>
+      </div>
+      <div><p className="label">Fecha fin *</p>
+        <input className="input" type="date" value={form.fin} onChange={e=>setForm({...form,fin:e.target.value})}/>
+      </div>
+    </div>
+    <div style={{marginBottom:10}}>
+      <p className="label">Motivo</p>
+      <input className="input" value={form.motivo} onChange={e=>setForm({...form,motivo:e.target.value})} placeholder="Ej. Vacaciones anuales"/>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>{
+        if(!form.emp||!form.ini||!form.fin) return;
+        setSolicitudes(p=>[...p,{id:Date.now(),emp:form.emp,tipo:form.tipo,ini:form.ini,fin:form.fin,dias:form.dias,st:'Pendiente',motivo:form.motivo}]);
+        setForm({emp:'',tipo:'Vacaciones',ini:'',fin:'',dias:1,motivo:''}); setShowForm(false);
+      }}>✓ Enviar Solicitud</button>
+      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
       {/* Alertas pendientes */}
       {pendientes.length > 0 && (
         <div
