@@ -1973,6 +1973,9 @@ function Reclutamiento() {
     },
   ]);
   const [tab, setTab] = useState('kanban');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name:'', pos:'', empresa:'zavix' });
+  
 
   const mover = (id: number, etapa: string) =>
     setCandidatos((p) => p.map((c) => (c.id === id ? { ...c, etapa } : c)));
@@ -1987,7 +1990,7 @@ function Reclutamiento() {
             candidatos activos
           </p>
         </div>
-        <button className="btn-primary">+ Nueva Vacante</button>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nueva Vacante</button>
       </div>
 
       {/* KPIs */}
@@ -2019,7 +2022,33 @@ function Reclutamiento() {
           </div>
         ))}
       </div>
-
+{showForm && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nueva Vacante</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Nombre del candidato *</p>
+        <input className="input" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} placeholder="Ej. Juan Pérez"/>
+      </div>
+      <div><p className="label">Puesto *</p>
+        <input className="input" value={form.pos} onChange={e=>setForm({...form, pos:e.target.value})} placeholder="Ej. Backend Developer"/>
+      </div>
+      <div><p className="label">Empresa</p>
+        <select className="select" value={form.empresa} onChange={e=>setForm({...form, empresa:e.target.value})}>
+          <option value="zavix">Zavix Brands</option>
+          <option value="adc">Almacenes DC</option>
+        </select>
+      </div>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>{
+        if(!form.name||!form.pos) return;
+        setCandidatos(p=>[...p,{id:Date.now(),name:form.name,pos:form.pos,etapa:'Postulando',fecha:'hoy',empresa:form.empresa}]);
+        setForm({name:'',pos:'',empresa:'zavix'}); setShowForm(false);
+      }}>✓ Agregar</button>
+      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
       {/* Tabs */}
       <div className="tab-nav">
         {[
