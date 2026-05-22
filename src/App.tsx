@@ -3604,44 +3604,6 @@ function Onboarding() {
             tienen documentos pendientes.
           </p>
         </div>
-      {showForm && (
-  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
-    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Iniciar Onboarding</p>
-    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
-      <div><p className="label">Nombre *</p>
-        <input className="input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Ej. Juan Pérez"/>
-      </div>
-      <div><p className="label">Puesto *</p>
-        <input className="input" value={form.pos} onChange={e=>setForm({...form,pos:e.target.value})} placeholder="Ej. Diseñador UX"/>
-      </div>
-      <div><p className="label">Área</p>
-        <input className="input" value={form.area} onChange={e=>setForm({...form,area:e.target.value})} placeholder="Ej. Diseño"/>
-      </div>
-    </div>
-    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
-      <div><p className="label">Empresa</p>
-        <select className="select" value={form.empresa} onChange={e=>setForm({...form,empresa:e.target.value})}>
-          <option value="zavix">Zavix Brands</option>
-          <option value="adc">Almacenes DC</option>
-        </select>
-      </div>
-      <div><p className="label">Fecha de ingreso *</p>
-        <input className="input" type="date" value={form.ingreso} onChange={e=>setForm({...form,ingreso:e.target.value})}/>
-      </div>
-      <div><p className="label">Manager</p>
-        <input className="input" value={form.manager} onChange={e=>setForm({...form,manager:e.target.value})} placeholder="Ej. Carlos López"/>
-      </div>
-    </div>
-    <div style={{display:'flex', gap:8}}>
-      <button className="btn-primary" onClick={()=>{
-        if(!form.name||!form.pos||!form.ingreso) return;
-        setColaboradores(p=>[...p,{id:Date.now(),name:form.name,pos:form.pos,area:form.area,empresa:form.empresa,ingreso:form.ingreso,manager:form.manager,etapa:'preingreso',tareas:{preingreso:[],dia1:[],semana1:[],mes1:[]},docs:{contrato:false,ine:false,curp:false,rfc:false,clabe:false,acta:false,foto:false,imss:false}}]);
-        setForm({name:'',pos:'',area:'',empresa:'zavix',ingreso:'',manager:''}); setShowForm(false);
-      }}>✓ Iniciar</button>
-      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
-    </div>
-  </div>
-)}
       )}
 
       {/* Tarjetas */}
