@@ -3804,8 +3804,6 @@ function Onboarding() {
 }
 function Capacitaciones() {
   const [cursos, setCursos] = useState([
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ titulo:'', cat:'Soft Skills', duracion:'', obligatorio:false });  
     {
       id: 1,
       titulo: 'Liderazgo y Gestión de Equipos',
