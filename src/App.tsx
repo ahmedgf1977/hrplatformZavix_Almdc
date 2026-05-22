@@ -5435,6 +5435,8 @@ function Notificaciones() {
   ]);
 
   const [tab, setTab] = useState('plantillas');
+  const [showSMTP, setShowSMTP] = useState(false);
+  const [smtp, setSmtp] = useState({ host:'smtp.gmail.com', puerto:'587', remitente:'noreply@zavixbrands.com', usuario:'', password:'' });
   const toggle = (id: string) =>
     setPlantillas((p) =>
       p.map((x) => (x.id === id ? { ...x, activo: !x.activo } : x))
@@ -5451,8 +5453,36 @@ function Notificaciones() {
             {totalEnviados} envíos totales
           </p>
         </div>
-        <button className="btn-secondary">⚙️ Configurar SMTP</button>
+        <button className="btn-secondary" onClick={() => setShowSMTP(!showSMTP)}>⚙️ Configurar SMTP</button>
       </div>
+      {showSMTP && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #e2e8f0'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>⚙️ Configuración SMTP</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Servidor SMTP</p>
+        <input className="input" value={smtp.host} onChange={e=>setSmtp({...smtp,host:e.target.value})} placeholder="smtp.gmail.com"/>
+      </div>
+      <div><p className="label">Puerto</p>
+        <input className="input" value={smtp.puerto} onChange={e=>setSmtp({...smtp,puerto:e.target.value})} placeholder="587"/>
+      </div>
+      <div><p className="label">Remitente</p>
+        <input className="input" value={smtp.remitente} onChange={e=>setSmtp({...smtp,remitente:e.target.value})} placeholder="noreply@zavixbrands.com"/>
+      </div>
+    </div>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Usuario</p>
+        <input className="input" value={smtp.usuario} onChange={e=>setSmtp({...smtp,usuario:e.target.value})} placeholder="usuario@gmail.com"/>
+      </div>
+      <div><p className="label">Contraseña de aplicación</p>
+        <input className="input" type="password" value={smtp.password} onChange={e=>setSmtp({...smtp,password:e.target.value})} placeholder="••••••••"/>
+      </div>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>setShowSMTP(false)}>✓ Guardar configuración</button>
+      <button className="btn-secondary" onClick={()=>setShowSMTP(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
 
       {/* KPIs */}
       <div
