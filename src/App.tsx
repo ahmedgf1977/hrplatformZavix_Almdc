@@ -4086,8 +4086,6 @@ function Capacitaciones() {
 }
 function Firma() {
   const [docs, setDocs] = useState([
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ titulo:'', tipo:'Contrato', firmantes:2 });
     {
       id: 1,
       titulo: 'Contrato Individual — Carlos López',
@@ -4134,7 +4132,8 @@ function Firma() {
       st: 'En Proceso',
     },
   ]);
-
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ titulo:'', tipo:'Contrato', firmantes:2 });
   const stColor: Record<string, string> = {
     Pendiente: '#f59e0b',
     Enviado: '#3b82f6',
@@ -4163,7 +4162,7 @@ function Firma() {
             Documentos y contratos · Zavix Brands & Almacenes DC
           </p>
         </div>
-        <button className="btn-primary">↑ Subir Documento</button>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>↑ Subir Documento</button>
       </div>
 {showForm && (
   <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
