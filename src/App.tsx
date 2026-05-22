@@ -3804,6 +3804,8 @@ function Onboarding() {
 }
 function Capacitaciones() {
   const [cursos, setCursos] = useState([
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ titulo:'', cat:'Soft Skills', duracion:'', obligatorio:false });  
     {
       id: 1,
       titulo: 'Liderazgo y Gestión de Equipos',
@@ -3871,8 +3873,38 @@ function Capacitaciones() {
             Cursos y formación · Zavix Brands & Almacenes DC
           </p>
         </div>
-        <button className="btn-primary" onClick={() => window.dispatchEvent(new CustomEvent('navigate', { detail: 'alta' }))}>+ Nuevo</button>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nuevo Curso</button>
       </div>
+      {showForm && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nuevo Curso</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Título *</p>
+        <input className="input" value={form.titulo} onChange={e=>setForm({...form,titulo:e.target.value})} placeholder="Ej. Excel Avanzado"/>
+      </div>
+      <div><p className="label">Categoría</p>
+        <select className="select" value={form.cat} onChange={e=>setForm({...form,cat:e.target.value})}>
+          {['Soft Skills','Herramientas','Compliance'].map(o=><option key={o}>{o}</option>)}
+        </select>
+      </div>
+      <div><p className="label">Duración</p>
+        <input className="input" value={form.duracion} onChange={e=>setForm({...form,duracion:e.target.value})} placeholder="Ej. 8h"/>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:8,paddingTop:18}}>
+        <input type="checkbox" checked={form.obligatorio} onChange={e=>setForm({...form,obligatorio:e.target.checked})}/>
+        <p className="label" style={{margin:0}}>Obligatorio</p>
+      </div>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>{
+        if(!form.titulo) return;
+        setCursos(p=>[...p,{id:Date.now(),titulo:form.titulo,cat:form.cat,inscritos:0,duracion:form.duracion,progreso:0,st:'Próximo',obligatorio:form.obligatorio}]);
+        setForm({titulo:'',cat:'Soft Skills',duracion:'',obligatorio:false}); setShowForm(false);
+      }}>✓ Agregar Curso</button>
+      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
 
       {/* KPIs */}
       <div
