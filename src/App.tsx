@@ -4086,6 +4086,8 @@ function Capacitaciones() {
 }
 function Firma() {
   const [docs, setDocs] = useState([
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ titulo:'', tipo:'Contrato', firmantes:2 });
     {
       id: 1,
       titulo: 'Contrato Individual — Carlos López',
@@ -4163,7 +4165,33 @@ function Firma() {
         </div>
         <button className="btn-primary">↑ Subir Documento</button>
       </div>
-
+{showForm && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nuevo Documento</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Título *</p>
+        <input className="input" value={form.titulo} onChange={e=>setForm({...form,titulo:e.target.value})} placeholder="Ej. Contrato — Juan Pérez"/>
+      </div>
+      <div><p className="label">Tipo</p>
+        <select className="select" value={form.tipo} onChange={e=>setForm({...form,tipo:e.target.value})}>
+          {['Contrato','NDA','Adenda','Política'].map(o=><option key={o}>{o}</option>)}
+        </select>
+      </div>
+      <div><p className="label">Número de firmantes</p>
+        <input className="input" type="number" min={1} value={form.firmantes} onChange={e=>setForm({...form,firmantes:Number(e.target.value)})}/>
+      </div>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>{
+        if(!form.titulo) return;
+        const hoy = new Date().toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'});
+        setDocs(p=>[...p,{id:Date.now(),titulo:form.titulo,tipo:form.tipo,fecha:hoy,firmantes:form.firmantes,firmados:0,st:'Enviado'}]);
+        setForm({titulo:'',tipo:'Contrato',firmantes:2}); setShowForm(false);
+      }}>✓ Subir</button>
+      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
       {/* KPIs */}
       <div
         style={{
