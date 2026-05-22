@@ -2359,6 +2359,10 @@ function Reclutamiento() {
 }
 function Evaluaciones() {
   const [tab, setTab] = useState('empleados');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ emp:'', evaluador:'', tipo:'Desempeño 360°', periodo:'Q1 2025' });
+  const [showEncuesta, setShowEncuesta] = useState(false);
+  const [formEncuesta, setFormEncuesta] = useState({ titulo:'', anon:true });
   const [evals, setEvals] = useState([
     {
       id: 1,
@@ -2529,10 +2533,10 @@ function Evaluaciones() {
           </button>
         )}
         {tab === 'empleados' && (
-          <button className="btn-primary">+ Nueva Evaluación</button>
+          <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nueva Evaluación</button>
         )}
         {tab === 'encuestas' && (
-          <button className="btn-primary">+ Nueva Encuesta</button>
+          <button className="btn-primary" onClick={() => setShowEncuesta(!showEncuesta)}>+ Nueva Encuesta</button>
         )}
       </div>
 
@@ -2608,6 +2612,37 @@ function Evaluaciones() {
       </div>
 
       {/* ── EMPLEADOS ── */}
+      {tab === 'empleados' && showForm && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nueva Evaluación</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Colaborador *</p>
+        <input className="input" value={form.emp} onChange={e=>setForm({...form,emp:e.target.value})} placeholder="Ej. María García"/>
+      </div>
+      <div><p className="label">Evaluador *</p>
+        <input className="input" value={form.evaluador} onChange={e=>setForm({...form,evaluador:e.target.value})} placeholder="Ej. CEO"/>
+      </div>
+      <div><p className="label">Tipo</p>
+        <select className="select" value={form.tipo} onChange={e=>setForm({...form,tipo:e.target.value})}>
+          {['Desempeño 360°','Competencias','OKR','Autoevaluación'].map(o=><option key={o}>{o}</option>)}
+        </select>
+      </div>
+      <div><p className="label">Período</p>
+        <select className="select" value={form.periodo} onChange={e=>setForm({...form,periodo:e.target.value})}>
+          {['Q1 2025','Q2 2025','Q3 2025','Q4 2025','Anual 2025'].map(o=><option key={o}>{o}</option>)}
+        </select>
+      </div>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>{
+        if(!form.emp||!form.evaluador) return;
+        setEvals(p=>[...p,{id:Date.now(),emp:form.emp,evaluador:form.evaluador,score:0,st:'Pendiente',periodo:form.periodo,tipo:form.tipo}]);
+        setForm({emp:'',evaluador:'',tipo:'Desempeño 360°',periodo:'Q1 2025'}); setShowForm(false);
+      }}>✓ Crear</button>
+      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
       {tab === 'empleados' && (
         <div className="card">
           <table className="table">
