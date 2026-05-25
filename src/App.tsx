@@ -6467,6 +6467,8 @@ function Usuarios() {
 
   const [tab, setTab] = useState('usuarios');
   const [filtro, setFiltro] = useState('todos');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ nombre:'', email:'', rol:'Colaborador', empresa:'zavix' });
 
   const filtrados =
     filtro === 'todos' ? usuarios : usuarios.filter((u) => u.status === filtro);
@@ -6480,8 +6482,40 @@ function Usuarios() {
             Control de acceso · Zavix Brands & Almacenes DC
           </p>
         </div>
-        <button className="btn-primary">+ Nuevo Usuario</button>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nuevo Usuario</button>
       </div>
+      {showForm && (
+  <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+    <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nuevo Usuario</p>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:10, marginBottom:10}}>
+      <div><p className="label">Nombre *</p>
+        <input className="input" value={form.nombre} onChange={e=>setForm({...form,nombre:e.target.value})} placeholder="Ej. Juan Pérez"/>
+      </div>
+      <div><p className="label">Correo *</p>
+        <input className="input" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="juan@zavixbrands.com"/>
+      </div>
+      <div><p className="label">Rol</p>
+        <select className="select" value={form.rol} onChange={e=>setForm({...form,rol:e.target.value})}>
+          {['Super Admin','Admin RRHH','Manager','Colaborador','Draft'].map(o=><option key={o}>{o}</option>)}
+        </select>
+      </div>
+      <div><p className="label">Empresa</p>
+        <select className="select" value={form.empresa} onChange={e=>setForm({...form,empresa:e.target.value})}>
+          <option value="zavix">Zavix Brands</option>
+          <option value="adc">Almacenes DC</option>
+        </select>
+      </div>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <button className="btn-primary" onClick={()=>{
+        if(!form.nombre||!form.email) return;
+        setUsuarios(p=>[...p,{id:Date.now(),nombre:form.nombre,email:form.email,rol:form.rol,empresa:form.empresa,status:'Activo',ultimo:'Nunca',permisos:[]}]);
+        setForm({nombre:'',email:'',rol:'Colaborador',empresa:'zavix'}); setShowForm(false);
+      }}>✓ Crear Usuario</button>
+      <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+    </div>
+  </div>
+)}
 
       {/* KPIs */}
       <div
