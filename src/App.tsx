@@ -7365,7 +7365,66 @@ function Alta() {
     </div>
   )
 }
-
+function Beneficios({ user, isColaborador }: any) {
+  const [cat, setCat] = React.useState('Todos');
+  const [q, setQ] = React.useState('');
+  const categorias = ['Todos','Fitness','Salud','Conocimiento','Servicios','Experiencias','Shopping'];
+  const catEmoji: Record<string,string> = {Todos:'🎁',Fitness:'🏃',Salud:'❤️',Conocimiento:'🎓',Servicios:'🔧',Experiencias:'😊',Shopping:'🛍'};
+  const beneficios = [
+    {id:1,nombre:'Seguro de Vida',cat:'Salud',desc:'Cobertura de vida y accidentes para ti y tu familia.',tipo:'Empresa',badge:'Incluido',color:'#10b981'},
+    {id:2,nombre:'Vales de Despensa',cat:'Shopping',desc:'Vales mensuales para compras en supermercados.',tipo:'Empresa',badge:'Mensual',color:'#6366f1'},
+    {id:3,nombre:'Fondo de Ahorro',cat:'Servicios',desc:'Ahorro mensual con aportación de la empresa.',tipo:'Empresa',badge:'10%',color:'#f59e0b'},
+    {id:4,nombre:'Gym Pass',cat:'Fitness',desc:'Acceso a gimnasios con descuento corporativo.',tipo:'Descuento',badge:'30% dto',color:'#ec4899'},
+    {id:5,nombre:'Capacitación Online',cat:'Conocimiento',desc:'Acceso a plataformas de aprendizaje en línea.',tipo:'Empresa',badge:'Incluido',color:'#3b82f6'},
+    {id:6,nombre:'Descuentos en Restaurantes',cat:'Experiencias',desc:'Descuentos en restaurantes afiliados.',tipo:'Descuento',badge:'15% dto',color:'#f97316'},
+    {id:7,nombre:'Servicio Médico',cat:'Salud',desc:'Consultas médicas sin costo en clínicas afiliadas.',tipo:'Empresa',badge:'Incluido',color:'#0d9488'},
+    {id:8,nombre:'Ninja Excel',cat:'Conocimiento',desc:'Aprende Excel desde cero hasta nivel avanzado.',tipo:'Descuento',badge:'-82%',color:'#7c3aed'},
+  ];
+  const filtrados = beneficios.filter(b=>(cat==='Todos'||b.cat===cat)&&(!q||b.nombre.toLowerCase().includes(q.toLowerCase())));
+  return (
+    <div style={{padding:'1.25rem'}} className="fade-in">
+      <div style={{marginBottom:16}}>
+        <h2 className="page-title">Mis Beneficios</h2>
+        <p className="page-sub">Beneficios y descuentos · {user?.company==='zavix'?'Zavix Brands':'Almacenes DC'}</p>
+      </div>
+      <div className="card" style={{marginBottom:14}}>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <span style={{fontSize:14}}>🔍</span>
+          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Buscar beneficios..."
+            style={{border:'none',background:'none',flex:1,fontSize:12,outline:'none'}}/>
+        </div>
+      </div>
+      <div style={{display:'flex',gap:16,marginBottom:20,justifyContent:'center',flexWrap:'wrap'}}>
+        {categorias.map(c=>(
+          <div key={c} onClick={()=>setCat(c)} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4,cursor:'pointer',opacity:cat===c?1:0.5}}>
+            <div style={{width:48,height:48,borderRadius:'50%',background:cat===c?'#0d9488':'#f1f5f9',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,transition:'all .2s'}}>
+              {catEmoji[c]}
+            </div>
+            <span style={{fontSize:10,fontWeight:cat===c?600:400,color:cat===c?'#0d9488':'#64748b'}}>{c}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:14}}>
+        {filtrados.map(b=>(
+          <div key={b.id} className="card" style={{cursor:'pointer',overflow:'hidden',padding:0}}>
+            <div style={{height:100,background:`linear-gradient(135deg,${b.color}22,${b.color}44)`,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+              <span style={{fontSize:40}}>🎁</span>
+              <span style={{position:'absolute',top:10,left:10,background:b.color,color:'white',padding:'2px 8px',borderRadius:20,fontSize:10,fontWeight:700}}>{b.badge}</span>
+              <span style={{position:'absolute',top:10,right:10,background:'white',color:b.color,padding:'2px 8px',borderRadius:20,fontSize:10,fontWeight:600,border:`1px solid ${b.color}30`}}>{b.tipo}</span>
+            </div>
+            <div style={{padding:'12px 14px'}}>
+              <p style={{margin:'0 0 4px',fontWeight:600,fontSize:13}}>{b.nombre}</p>
+              <p style={{margin:'0 0 10px',fontSize:11,color:'#64748b'}}>{b.desc}</p>
+              <div style={{display:'flex',gap:6}}>
+                <span style={{background:b.color+'18',color:b.color,padding:'2px 8px',borderRadius:8,fontSize:10,fontWeight:500}}>{b.cat}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 const VIEWS: Record<string, () => React.ReactElement> = {
   dashboard: Dashboard,
   personas: Personas,
@@ -7382,6 +7441,7 @@ const VIEWS: Record<string, () => React.ReactElement> = {
   notificaciones: Notificaciones,
   calendario: Calendario,
   usuarios: Usuarios,
+  beneficios: Beneficios,
   configuracion: () => (
     <ModuloEnConstruccion nombre="Configuración" emoji="⚙️" />
   ),
