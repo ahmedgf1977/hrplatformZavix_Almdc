@@ -215,7 +215,8 @@ function Sidebar({
   setCompany,
   onLogout,
 }:any) {
-  const mods = MODULES.filter((m) => m.roles.includes(user.id) || m.roles.includes(user.role) || (user.role === 'admin' && m.roles.includes('brenda')) || (user.role === 'superadmin' && m.roles.includes('ahmed')));
+  const isAdmin = user.role === 'admin' || user.role === 'superadmin';
+  const mods = isAdmin ? MODULES : MODULES.filter((m) => m.roles.includes('colab'));
   const co = COMPANIES.find((c) => c.id === company);
   return (
     <div
