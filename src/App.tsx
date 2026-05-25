@@ -436,8 +436,6 @@ function Dashboard({ user, isColaborador }: any) {
     </div>
   );
   return (
-        );
-  return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div style={{ marginBottom: '1rem' }}>
         <h2 className="page-title">Panel de Control</h2>
