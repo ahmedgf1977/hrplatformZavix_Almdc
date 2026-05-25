@@ -7365,7 +7365,7 @@ function Alta() {
     </div>
   )
 }
-function Beneficios({ user, isColaborador }: any) {
+beneficios: (props: any) => <Beneficios {...props} />,
   const [cat, setCat] = React.useState('Todos');
   const [q, setQ] = React.useState('');
   const categorias = ['Todos','Fitness','Salud','Conocimiento','Servicios','Experiencias','Shopping'];
@@ -7462,6 +7462,7 @@ useEffect(() => {
 
   const isColaborador = user?.role === 'colaborador';
   const ActiveView = VIEWS[active] || Dashboard;
+  const activeProps = { user, isColaborador };
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
