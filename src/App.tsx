@@ -7148,6 +7148,7 @@ useEffect(() => {
 }, []);
   if (!user) return <Login onLogin={(u,t)=>{ setUser(u); setToken(t); setActive('dashboard') }} />
 
+  const isColaborador = user?.role === 'colaborador';
   const ActiveView = VIEWS[active] || Dashboard;
 
   return (
@@ -7210,7 +7211,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-        <ActiveView />
+        <ActiveView user={user} isColaborador={isColaborador} />
       </main>
     </div>
   );
