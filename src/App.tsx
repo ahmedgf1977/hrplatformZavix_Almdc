@@ -403,7 +403,14 @@ function Dashboard({ user, isColaborador }: any) {
             {user?.company === 'zavix' ? 'Zavix Brands' : 'Almacenes DC'}
           </span>
           <div style={{borderTop:'0.5px solid #f1f5f9',marginTop:14,paddingTop:12,textAlign:'left'}}>
-            {[['✉️','Correo',user?.email],['🏢','Empresa',user?.company==='zavix'?'Zavix Brands':'Almacenes DC'],['💼','Puesto',user?.position||'—'],['🏗','Área',user?.area||'—'],['👤','Manager',user?.manager||'—'],['📱','Teléfono',user?.phone||'—']].map(([ic,l,v])=>(
+            {[['✉️','Correo',user?.email],['🏢','Empresa',user?.company==='zavix'?'Zavix Brands':'Almacenes DC'],['💼','Puesto',user?.position||'—'],['🏗','Área',user?.area||'—'],['👤','Manager',user?.manager||'—'],['📱','Teléfono',user?.phone||'—'],
+              ['🏛','División',user?.division||'—'],
+              ['💰','Centro de Costos',user?.costCenter||'—'],
+              ['📄','Tipo de Contrato',user?.contractType||'—'],
+              ['⏰','Jornada',user?.schedule||'—'],
+              ['📅','Fecha Ingreso',user?.startDate||'—'],
+              ['🏖','Días de Vacaciones',user?.vacationDays?String(user.vacationDays):'—'],
+              ['📍','Ubicación',user?.workLocation||'—']].map(([ic,l,v])=>(
               <div key={String(l)} style={{display:'flex',gap:8,padding:'4px 0'}}>
                 <span style={{fontSize:12,width:16,flexShrink:0}}>{ic}</span>
                 <div>
