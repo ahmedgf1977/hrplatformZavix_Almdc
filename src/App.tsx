@@ -436,7 +436,14 @@ function Dashboard({ user, isColaborador }: any) {
     </div>
   );
   return (
-        className="card"
+        );
+  return (
+    <div style={{ padding: '1.25rem' }} className="fade-in">
+      <div style={{ marginBottom: '1rem' }}>
+        <h2 className="page-title">Panel de Control</h2>
+        <p className="page-sub">Miércoles, 14 de mayo 2025 · Zavix Brands & Almacenes DC</p>
+      </div>
+      <div className="card"
         style={{ background: '#f0fdf4', border: '0.5px solid #bbf7d0' }}
       >
         <p style={{ margin: 0, fontSize: 11, color: '#065f46' }}>
