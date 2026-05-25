@@ -385,165 +385,57 @@ function Sidebar({
 }
 
 // ── Módulos (stubs listos para rellenar) ──────────────────
-function Dashboard() {
-  return (
-    <div style={{ padding: '1.25rem' }} className="fade-in">
-      <div style={{ marginBottom: '1rem' }}>
-        <h2 className="page-title">Panel de Control</h2>
-        <p className="page-sub">
-          Miércoles, 14 de mayo 2025 · Zavix Brands & Almacenes DC
-        </p>
+function Dashboard({ user, isColaborador }: any) {
+  if (isColaborador) return (
+    <div style={{padding:'1.25rem'}} className="fade-in">
+      <div style={{marginBottom:16}}>
+        <h2 className="page-title">Mi Portal</h2>
+        <p className="page-sub">Bienvenido, {user?.name}</p>
       </div>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(6,1fr)',
-          gap: 10,
-          marginBottom: 16,
-        }}
-      >
-        {[
-          { e: '👥', l: 'Headcount', v: 31, c: '#0d9488' },
-          { e: '🏢', l: 'Zavix Brands', v: 18, c: '#0d9488' },
-          { e: '🏭', l: 'Almacenes DC', v: 13, c: '#6366f1' },
-          { e: '⏳', l: 'Pendientes', v: 2, c: '#f59e0b' },
-          { e: '🎉', l: 'Onboarding', v: 3, c: '#ec4899' },
-          { e: '⭐', l: 'Desempeño', v: '4.4', c: '#8b5cf6' },
-        ].map((k) => (
-          <div key={k.l} className="kpi-card">
-            <div className="kpi-icon" style={{ background: k.c + '18' }}>
-              <span style={{ fontSize: 16 }}>{k.e}</span>
-            </div>
-            <div>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: k.c,
-                  lineHeight: 1,
-                }}
-              >
-                {k.v}
-              </p>
-              <p style={{ margin: '2px 0 0', fontSize: 10, color: '#64748b' }}>
-                {k.l}
-              </p>
+      <div style={{display:'grid', gridTemplateColumns:'220px 1fr', gap:14}}>
+        <div className="card" style={{textAlign:'center', padding:'1.5rem 1rem'}}>
+          <div style={{width:72,height:72,borderRadius:'50%',background:'#0d9488',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:24,fontWeight:700,margin:'0 auto 12px'}}>
+            {user?.name?.split(' ').slice(0,2).map((n:string)=>n[0]).join('')}
+          </div>
+          <p style={{margin:'0 0 4px',fontWeight:600,fontSize:14}}>{user?.name}</p>
+          <p style={{margin:'0 0 10px',fontSize:11,color:'#64748b'}}>{user?.role}</p>
+          <span style={{background:'#ccfbf1',color:'#0d9488',padding:'2px 10px',borderRadius:10,fontSize:10,fontWeight:600}}>
+            {user?.company === 'zavix' ? 'Zavix Brands' : 'Almacenes DC'}
+          </span>
+          <div style={{borderTop:'0.5px solid #f1f5f9',marginTop:14,paddingTop:12,textAlign:'left'}}>
+            {[['✉️','Correo',user?.email],['🏢','Empresa',user?.company==='zavix'?'Zavix Brands':'Almacenes DC']].map(([ic,l,v])=>(
+              <div key={String(l)} style={{display:'flex',gap:8,padding:'4px 0'}}>
+                <span style={{fontSize:12,width:16,flexShrink:0}}>{ic}</span>
+                <div>
+                  <p style={{margin:0,fontSize:9,color:'#94a3b8'}}>{l}</p>
+                  <p style={{margin:0,fontSize:11,color:'#374151'}}>{v}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          <div className="card">
+            <p style={{fontWeight:600,fontSize:12,marginBottom:10,color:'#0d9488'}}>Mis Accesos Rápidos</p>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
+              {[['🏖','Mis Vacaciones','vacaciones'],['📢','Comunicados','comunicados'],['⭐','Mis Evaluaciones','evaluaciones'],['📚','Capacitaciones','capacitaciones'],['✍️','Mis Documentos','firma']].map(([e,l,id])=>(
+                <div key={String(id)} onClick={()=>window.dispatchEvent(new CustomEvent('navigate',{detail:id}))}
+                  style={{background:'#f8fafc',border:'0.5px solid #e2e8f0',borderRadius:8,padding:'12px',textAlign:'center',cursor:'pointer'}}>
+                  <p style={{fontSize:24,margin:'0 0 6px'}}>{e}</p>
+                  <p style={{margin:0,fontSize:11,fontWeight:500,color:'#374151'}}>{l}</p>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 12,
-          marginBottom: 12,
-        }}
-      >
-        <div className="card">
-          <p style={{ fontWeight: 600, fontSize: 12, marginBottom: 8 }}>
-            Estado de Módulos
-          </p>
-          {[
-            { e: '🎉', l: 'Onboarding', v: 1, t: 3, c: '#ec4899' },
-            { e: '📁', l: 'Expedientes', v: 6, t: 8, c: '#f59e0b' },
-            { e: '⭐', l: 'Evaluaciones Q1', v: 4, t: 6, c: '#6366f1' },
-            { e: '✍️', l: 'Firmas', v: 3, t: 5, c: '#3b82f6' },
-            { e: '🏖', l: 'Vacaciones aprobadas', v: 3, t: 5, c: '#0d9488' },
-          ].map((m) => (
-            <div key={m.l} style={{ marginBottom: 8 }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginBottom: 2,
-                }}
-              >
-                <span style={{ fontSize: 11 }}>
-                  {m.e} {m.l}
-                </span>
-                <span style={{ fontSize: 10, color: '#64748b' }}>
-                  {m.v}/{m.t}
-                </span>
-              </div>
-              <div className="prog-track">
-                <div
-                  className="prog-fill"
-                  style={{
-                    width: `${Math.round((m.v / m.t) * 100)}%`,
-                    background: m.c,
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="card">
-          <p style={{ fontWeight: 600, fontSize: 12, marginBottom: 8 }}>
-            Actividad Reciente
-          </p>
-          {[
-            {
-              e: '👤',
-              t: 'Natalia Cruz fue contratada',
-              h: 'Hace 1h',
-              c: '#0d9488',
-            },
-            {
-              e: '📄',
-              t: 'Adenda salarial firmada — María García',
-              h: 'Hace 3h',
-              c: '#6366f1',
-            },
-            {
-              e: '📚',
-              t: 'Carlos López completó Excel Avanzado',
-              h: 'Hace 5h',
-              c: '#3b82f6',
-            },
-            {
-              e: '⭐',
-              t: 'Evaluación Q1 — 4 empleados completada',
-              h: 'Ayer',
-              c: '#f59e0b',
-            },
-          ].map((a, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                gap: 8,
-                padding: '6px 0',
-                borderBottom: i < 3 ? '0.5px solid #f1f5f9' : 'none',
-              }}
-            >
-              <div
-                style={{
-                  width: 26,
-                  height: 26,
-                  borderRadius: 7,
-                  background: a.c + '18',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 13,
-                  flexShrink: 0,
-                }}
-              >
-                {a.e}
-              </div>
-              <div>
-                <p style={{ margin: 0, fontSize: 11 }}>{a.t}</p>
-                <p style={{ margin: 0, fontSize: 10, color: '#94a3b8' }}>
-                  {a.h}
-                </p>
-              </div>
-            </div>
-          ))}
+          <div className="card">
+            <p style={{fontWeight:600,fontSize:12,marginBottom:8,color:'#0d9488'}}>Mi Información</p>
+            <p style={{margin:0,fontSize:11,color:'#64748b'}}>Completa tu perfil desde cada módulo. Si necesitas actualizar algún dato, contacta a RRHH.</p>
+          </div>
         </div>
       </div>
-      <div
+    </div>
+  );
+  return (
         className="card"
         style={{ background: '#f0fdf4', border: '0.5px solid #bbf7d0' }}
       >
