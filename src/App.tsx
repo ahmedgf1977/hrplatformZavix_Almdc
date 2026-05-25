@@ -435,7 +435,7 @@ function Dashboard({ user, isColaborador }: any) {
       </div>
     </div>
   );
-  return ( 
+  return (
         className="card"
         style={{ background: '#f0fdf4', border: '0.5px solid #bbf7d0' }}
       >
