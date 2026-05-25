@@ -7365,7 +7365,7 @@ function Alta() {
     </div>
   )
 }
-beneficios: (props: any) => <Beneficios {...props} />,
+function Beneficios({ user, isColaborador }: any) {
   const [cat, setCat] = React.useState('Todos');
   const [q, setQ] = React.useState('');
   const categorias = ['Todos','Fitness','Salud','Conocimiento','Servicios','Experiencias','Shopping'];
@@ -7425,7 +7425,7 @@ beneficios: (props: any) => <Beneficios {...props} />,
     </div>
   );
 }
-const VIEWS: Record<string, () => React.ReactElement> = {
+const VIEWS: Record<string, (props?: any) => React.ReactElement> = {
   dashboard: Dashboard,
   personas: Personas,
   alta: Alta,
@@ -7441,7 +7441,7 @@ const VIEWS: Record<string, () => React.ReactElement> = {
   notificaciones: Notificaciones,
   calendario: Calendario,
   usuarios: Usuarios,
-  beneficios: Beneficios,
+  beneficios: (props: any) => <Beneficios {...props} />,
   configuracion: () => (
     <ModuloEnConstruccion nombre="Configuración" emoji="⚙️" />
   ),
