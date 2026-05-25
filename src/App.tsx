@@ -457,23 +457,56 @@ function Dashboard({ user, isColaborador }: any) {
             </div>
           )}
           {tabColab==='vacaciones' && (
-            <div className="card">
-              <p style={{fontWeight:600,fontSize:12,marginBottom:12,color:'#0d9488'}}>Mi Saldo de Vacaciones</p>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:16}}>
-                {[['Días LFT',user?.vacationDays||14,'#0d9488'],['Usados',3,'#6366f1'],['Disponibles',(user?.vacationDays||14)-3,'#10b981']].map(([l,v,c])=>(
-                  <div key={String(l)} style={{background:String(c)+'12',borderRadius:8,padding:12,textAlign:'center',border:`0.5px solid ${String(c)}30`}}>
-                    <p style={{margin:0,fontSize:22,fontWeight:700,color:String(c)}}>{v}</p>
-                    <p style={{margin:0,fontSize:10,color:'#64748b'}}>{l}</p>
-                  </div>
-                ))}
-              </div>
-              <button className="btn-primary" onClick={()=>window.dispatchEvent(new CustomEvent('navigate',{detail:'vacaciones'}))}>Solicitar Vacaciones →</button>
-            </div>
-          )}
-        </div>
-      </div>
+  <div>
+    <div className="card" style={{marginBottom:12}}>
+      <p style={{fontWeight:600,fontSize:12,marginBottom:12,color:'#0d9488'}}>Vacaciones</p>
+      <table style={{width:'100%',fontSize:12}}>
+        <thead>
+          <tr style={{background:'#f8fafc'}}>
+            <th style={{textAlign:'left',padding:'8px',color:'#64748b',fontWeight:500}}>Saldo</th>
+            <th style={{textAlign:'right',padding:'8px',color:'#64748b',fontWeight:500}}>Legales</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[['(+) Acumuladas',user?.vacationDays||14],['(-) Tomadas',3],['(-) Tomadas en el futuro',0],['(=) Total saldo',(user?.vacationDays||14)-3]].map(([l,v])=>(
+            <tr key={String(l)} style={{borderBottom:'0.5px solid #f1f5f9'}}>
+              <td style={{padding:'8px',fontWeight:String(l).startsWith('(=')?600:400}}>{l}</td>
+              <td style={{padding:'8px',textAlign:'right',fontWeight:String(l).startsWith('(=')?600:400}}>{v} días</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  );
+    <div className="card">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <p style={{fontWeight:600,fontSize:12,margin:0,color:'#0d9488'}}>Vacaciones tomadas</p>
+        <button className="btn-primary" style={{fontSize:11,padding:'4px 12px'}} onClick={()=>window.dispatchEvent(new CustomEvent('navigate',{detail:'vacaciones'}))}>Solicitar</button>
+      </div>
+      <table style={{width:'100%',fontSize:12}}>
+        <thead>
+          <tr style={{background:'#f8fafc'}}>
+            {['Inicio','Término','Núm. Días','Tipo','Estado'].map(h=>(
+              <th key={h} style={{textAlign:'left',padding:'8px',color:'#64748b',fontWeight:500}}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {[{ini:'2025-05-20',fin:'2025-05-30',dias:10,tipo:'Legales',st:'Aprobada'}].map((v,i)=>(
+            <tr key={i} style={{borderBottom:'0.5px solid #f1f5f9'}}>
+              <td style={{padding:'8px'}}>{v.ini}</td>
+              <td style={{padding:'8px'}}>{v.fin}</td>
+              <td style={{padding:'8px'}}>{v.dias}</td>
+              <td style={{padding:'8px'}}>{v.tipo}</td>
+              <td style={{padding:'8px'}}>
+                <span style={{background:'#f0fdf4',color:'#10b981',padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:500}}>{v.st}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div style={{ marginBottom: '1rem' }}>
