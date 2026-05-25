@@ -4213,7 +4213,7 @@ if (isColaborador) {
     </div>
   );
 }
-function Firma() {
+function Firma({ user, isColaborador }: any) {
   const [docs, setDocs] = useState([
     {
       id: 1,
@@ -4281,7 +4281,56 @@ function Firma() {
     Adenda: '#f59e0b',
     Política: '#3b82f6',
   };
-
+if (isColaborador) {
+  const misDocs = docs.filter(d =>
+    d.titulo.toLowerCase().includes((user?.name||'').toLowerCase().split(' ')[0].toLowerCase()) ||
+    d.titulo.toLowerCase().includes('global')
+  );
+  return (
+    <div style={{padding:'1.25rem'}} className="fade-in">
+      <div style={{marginBottom:16}}>
+        <h2 className="page-title">Mis Documentos</h2>
+        <p className="page-sub">Firma Electrónica · {user?.name}</p>
+      </div>
+      <div style={{display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:14}}>
+        {[
+          {e:'⏳',l:'Pendientes',v:misDocs.filter(d=>d.st==='Pendiente'||d.st==='Enviado').length,c:'#f59e0b'},
+          {e:'✅',l:'Firmados',v:misDocs.filter(d=>d.st==='Firmado').length,c:'#10b981'},
+          {e:'📄',l:'Total',v:misDocs.length,c:'#6366f1'},
+        ].map(k=>(
+          <div key={k.l} className="kpi-card">
+            <div className="kpi-icon" style={{background:k.c+'18'}}><span style={{fontSize:15}}>{k.e}</span></div>
+            <div>
+              <p style={{margin:0,fontSize:18,fontWeight:700,color:k.c,lineHeight:1}}>{k.v}</p>
+              <p style={{margin:'2px 0 0',fontSize:10,color:'#64748b'}}>{k.l}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <p style={{fontWeight:600,fontSize:12,marginBottom:10}}>Mis Documentos</p>
+        {misDocs.length===0
+          ? <p style={{fontSize:11,color:'#64748b'}}>No tienes documentos pendientes.</p>
+          : misDocs.map(doc=>(
+            <div key={doc.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 0',borderBottom:'0.5px solid #f1f5f9'}}>
+              <div style={{display:'flex',alignItems:'center',gap:10}}>
+                <div style={{width:36,height:36,borderRadius:8,background:'#0d948818',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>📄</div>
+                <div>
+                  <p style={{margin:0,fontSize:12,fontWeight:500}}>{doc.titulo}</p>
+                  <p style={{margin:0,fontSize:11,color:'#64748b'}}>{doc.tipo} · {doc.fecha}</p>
+                </div>
+              </div>
+              <div style={{display:'flex',alignItems:'center',gap:10}}>
+                <span style={{background:doc.st==='Firmado'?'#f0fdf4':doc.st==='Pendiente'?'#fffbeb':'#eff6ff',color:doc.st==='Firmado'?'#10b981':doc.st==='Pendiente'?'#f59e0b':'#3b82f6',padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:500}}>{doc.st}</span>
+                {doc.st!=='Firmado' && <button className="btn-primary" style={{fontSize:11,padding:'4px 12px'}}>✍️ Firmar</button>}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
+}
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div className="page-header">
