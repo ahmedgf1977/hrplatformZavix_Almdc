@@ -1101,7 +1101,7 @@ const SALDOS = [
   { emp: 'Sofía Morales', lft: 16, usado: 8, pendiente: 0 },
 ];
 
-function Vacaciones() {
+function Vacaciones({ user, isColaborador }: any) {
   const [solicitudes, setSolicitudes] = useState(AUSENCIAS);
   const [tab, setTab] = useState('solicitudes');
   const [filtro, setFiltro] = useState('todos');
@@ -1133,6 +1133,75 @@ function Vacaciones() {
     filtro === 'todos'
       ? solicitudes
       : solicitudes.filter((s) => s.st === filtro);
+
+  if (isColaborador) return (
+    <div style={{padding:'1.25rem'}} className="fade-in">
+      <div className="page-header">
+        <div>
+          <h2 className="page-title">Mis Vacaciones</h2>
+          <p className="page-sub">Mi saldo y solicitudes</p>
+        </div>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Solicitar</button>
+      </div>
+      {showForm && (
+        <div className="card" style={{marginBottom:14, border:'1px solid #ccfbf1'}}>
+          <p style={{fontWeight:600, fontSize:12, marginBottom:10}}>Nueva Solicitud</p>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
+            <div><p className="label">Tipo</p>
+              <select className="select" value={form.tipo} onChange={e=>setForm({...form,tipo:e.target.value})}>
+                {['Vacaciones','Permiso Personal','Licencia Médica'].map(o=><option key={o}>{o}</option>)}
+              </select>
+            </div>
+            <div><p className="label">Fecha inicio *</p>
+              <input className="input" type="date" value={form.ini} onChange={e=>setForm({...form,ini:e.target.value})}/>
+            </div>
+            <div><p className="label">Fecha fin *</p>
+              <input className="input" type="date" value={form.fin} onChange={e=>setForm({...form,fin:e.target.value})}/>
+            </div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <p className="label">Motivo</p>
+            <input className="input" value={form.motivo} onChange={e=>setForm({...form,motivo:e.target.value})} placeholder="Ej. Vacaciones anuales"/>
+          </div>
+          <div style={{display:'flex', gap:8}}>
+            <button className="btn-primary" onClick={()=>{
+              if(!form.ini||!form.fin) return;
+              const dias = Math.ceil((new Date(form.fin).getTime()-new Date(form.ini).getTime())/(1000*60*60*24))+1;
+              setSolicitudes(p=>[...p,{id:Date.now(),emp:user?.name||'Yo',tipo:form.tipo,ini:form.ini,fin:form.fin,dias,st:'Pendiente',motivo:form.motivo}]);
+              setForm({emp:'',tipo:'Vacaciones',ini:'',fin:'',dias:1,motivo:''}); setShowForm(false);
+            }}>✓ Enviar</button>
+            <button className="btn-secondary" onClick={()=>setShowForm(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
+      <div style={{display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:14}}>
+        {[['Días LFT','14','#0d9488'],['Usados','3','#6366f1'],['Disponibles','11','#10b981']].map(([l,v,c])=>(
+          <div key={String(l)} className="kpi-card">
+            <div className="kpi-icon" style={{background:String(c)+'18'}}><span style={{fontSize:15}}>🏖</span></div>
+            <div>
+              <p style={{margin:0,fontSize:18,fontWeight:700,color:String(c),lineHeight:1}}>{v}</p>
+              <p style={{margin:'2px 0 0',fontSize:10,color:'#64748b'}}>{l}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <p style={{fontWeight:600,fontSize:12,marginBottom:10}}>Mis Solicitudes</p>
+        {solicitudes.filter(s=>s.emp===user?.name||s.emp==='Yo').length===0
+          ? <p style={{fontSize:11,color:'#64748b'}}>No tienes solicitudes registradas.</p>
+          : solicitudes.filter(s=>s.emp===user?.name||s.emp==='Yo').map(s=>(
+            <div key={s.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0',borderBottom:'0.5px solid #f1f5f9'}}>
+              <div>
+                <p style={{margin:0,fontSize:12,fontWeight:500}}>{s.tipo}</p>
+                <p style={{margin:0,fontSize:11,color:'#64748b'}}>{s.ini} → {s.fin} · {s.dias} días</p>
+              </div>
+              <span style={{background:stBg[s.st],color:stColor[s.st],padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:500}}>{s.st}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
