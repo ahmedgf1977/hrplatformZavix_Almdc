@@ -132,6 +132,12 @@ const MODULES = [
     emoji: '⚙️',
     roles: ['ahmed'],
   },
+  {
+    id: 'beneficios',
+    label: 'Mis Beneficios',
+    emoji: '🎁',
+    roles: ['brenda', 'ahmed', 'colab'],
+  },
 ];
 
 // ── Login ──────────────────────────────────────────────────
