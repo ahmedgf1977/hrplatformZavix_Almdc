@@ -7314,7 +7314,7 @@ const VIEWS: Record<string, () => React.ReactElement> = {
 
 // ── App ────────────────────────────────────────────────────
 export default function App() {
-  const [user, setUser] = useState<any>(()=>{ try { const t=localStorage.getItem('hrp_token'); return t?JSON.parse(atob(t.split('.')[1])):null } catch{return null} })
+  const [user, setUser] = useState<any>(()=>{ try { const t=localStorage.getItem('hrp_token'); return t?JSON.parse(decodeURIComponent(atob(t.split('.')[1]).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''))):null } catch{return null} })
   const [token, setToken] = useState<string>(()=>localStorage.getItem('hrp_token')||'')
   const [active, setActive] = useState('dashboard')
   const [company, setCompany] = useState('zavix')
