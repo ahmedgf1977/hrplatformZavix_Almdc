@@ -3869,7 +3869,7 @@ function Onboarding() {
     </div>
   );
 }
-function Capacitaciones() {
+function Capacitaciones({ user, isColaborador }: any) {
   const [cursos, setCursos] = useState([
     {
       id: 1,
@@ -3926,7 +3926,69 @@ function Capacitaciones() {
   const [form, setForm] = useState({ titulo:'', cat:'Soft Skills', duracion:'', obligatorio:false });
   const catColor: Record<string, string> = {
   };
-
+if (isColaborador) {
+  const [inscritos, setInscritos] = React.useState<number[]>([3]);
+  const misActivos = cursos.filter(c => inscritos.includes(c.id) && c.st === 'Activo');
+  const disponibles = cursos.filter(c => !inscritos.includes(c.id));
+  return (
+    <div style={{padding:'1.25rem'}} className="fade-in">
+      <div style={{marginBottom:16}}>
+        <h2 className="page-title">Mis Capacitaciones</h2>
+        <p className="page-sub">Cursos asignados y disponibles · {user?.name}</p>
+      </div>
+      <div style={{display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:14}}>
+        {[
+          {e:'📚',l:'Mis Cursos',v:misActivos.length,c:'#6366f1'},
+          {e:'✅',l:'Completados',v:0,c:'#10b981'},
+          {e:'🎓',l:'Disponibles',v:disponibles.length,c:'#f59e0b'},
+        ].map(k=>(
+          <div key={k.l} className="kpi-card">
+            <div className="kpi-icon" style={{background:k.c+'18'}}><span style={{fontSize:15}}>{k.e}</span></div>
+            <div>
+              <p style={{margin:0,fontSize:18,fontWeight:700,color:k.c,lineHeight:1}}>{k.v}</p>
+              <p style={{margin:'2px 0 0',fontSize:10,color:'#64748b'}}>{k.l}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      {misActivos.length > 0 && (
+        <div className="card" style={{marginBottom:14}}>
+          <p style={{fontWeight:600,fontSize:12,marginBottom:10,color:'#0d9488'}}>Mis Cursos Activos</p>
+          {misActivos.map(c=>(
+            <div key={c.id} style={{padding:'10px 0',borderBottom:'0.5px solid #f1f5f9'}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
+                <div>
+                  <p style={{margin:0,fontSize:12,fontWeight:500}}>{c.titulo}</p>
+                  <p style={{margin:0,fontSize:11,color:'#64748b'}}>{c.cat} · {c.duracion}</p>
+                </div>
+                <span style={{background:'#f0fdf4',color:'#065f46',padding:'2px 8px',borderRadius:8,fontSize:10}}>Inscrito</span>
+              </div>
+              <div style={{height:5,background:'#e2e8f0',borderRadius:3}}>
+                <div style={{width:`${c.progreso}%`,height:'100%',background:'#6366f1',borderRadius:3}}/>
+              </div>
+              <p style={{margin:'4px 0 0',fontSize:10,color:'#64748b'}}>{c.progreso}% completado</p>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="card">
+        <p style={{fontWeight:600,fontSize:12,marginBottom:10,color:'#0d9488'}}>Cursos Disponibles</p>
+        {disponibles.map(c=>(
+          <div key={c.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 0',borderBottom:'0.5px solid #f1f5f9'}}>
+            <div>
+              <p style={{margin:0,fontSize:12,fontWeight:500}}>{c.titulo}</p>
+              <p style={{margin:0,fontSize:11,color:'#64748b'}}>{c.cat} · {c.duracion}</p>
+            </div>
+            <button className="btn-primary" style={{fontSize:11,padding:'4px 12px'}}
+              onClick={()=>setInscritos(p=>[...p,c.id])}>
+              Inscribirse
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div className="page-header">
