@@ -1646,7 +1646,7 @@ function Vacaciones({ user, isColaborador }: any) {
     </div>
   );
 }
-function Comunicados() {
+function Comunicados({ user, isColaborador }: any) {
   const [list, setList] = useState([
     {
       id: 1,
@@ -1721,7 +1721,52 @@ function Comunicados() {
     setForm({ titulo: '', dest: 'Ambas', pr: 'Normal' });
     setShow(false);
   };
+const [selectedComunicado, setSelectedComunicado] = useState<any>(null);
 
+if (isColaborador) return (
+  <div style={{padding:'1.25rem'}} className="fade-in">
+    <div style={{marginBottom:16}}>
+      <h2 className="page-title">Comunicados</h2>
+      <p className="page-sub">Avisos internos · {user?.company==='zavix'?'Zavix Brands':'Almacenes DC'}</p>
+    </div>
+    {selectedComunicado && (
+      <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}
+        onClick={()=>setSelectedComunicado(null)}>
+        <div style={{background:'white',borderRadius:16,padding:28,maxWidth:540,width:'90%'}} onClick={e=>e.stopPropagation()}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
+            <div>
+              <span style={{background:'#fee2e2',color:'#dc2626',padding:'2px 8px',borderRadius:8,fontSize:10,fontWeight:500,marginBottom:8,display:'inline-block'}}>{selectedComunicado.pr}</span>
+              <h3 style={{margin:'8px 0 4px',fontSize:15,fontWeight:600}}>{selectedComunicado.titulo}</h3>
+              <p style={{margin:0,fontSize:11,color:'#64748b'}}>{selectedComunicado.autor} · {selectedComunicado.fecha}</p>
+            </div>
+            <button onClick={()=>setSelectedComunicado(null)} style={{background:'none',border:'none',cursor:'pointer',fontSize:20,color:'#64748b'}}>✕</button>
+          </div>
+          <div style={{background:'#f8fafc',borderRadius:8,padding:16,fontSize:13,color:'#374151',lineHeight:1.6}}>
+            <p>Este comunicado fue publicado por {selectedComunicado.autor} el {selectedComunicado.fecha} para {selectedComunicado.dest==='Ambas'?'toda la organización':selectedComunicado.dest}.</p>
+            <p style={{marginTop:8}}>Para más información contacta a RRHH.</p>
+          </div>
+        </div>
+      </div>
+    )}
+    <div style={{display:'flex',flexDirection:'column',gap:8}}>
+      {list.filter(c=>c.dest==='Ambas'||(c.dest==='Zavix'&&user?.company==='zavix')||(c.dest==='ADC'&&user?.company==='adc')).map(c=>(
+        <div key={c.id} className="card" style={{cursor:'pointer',borderLeft:`3px solid ${c.pr==='Alta'?'#ef4444':c.pr==='Media'?'#f59e0b':'#3b82f6'}`}}
+          onClick={()=>setSelectedComunicado(c)}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
+                <span style={{fontWeight:600,fontSize:13}}>{c.titulo}</span>
+                <span style={{background:c.pr==='Alta'?'#fef2f2':c.pr==='Media'?'#fffbeb':'#eff6ff',color:c.pr==='Alta'?'#ef4444':c.pr==='Media'?'#f59e0b':'#3b82f6',padding:'1px 8px',borderRadius:10,fontSize:10,fontWeight:500}}>{c.pr}</span>
+              </div>
+              <p style={{margin:0,fontSize:11,color:'#64748b'}}>{c.autor} · {c.fecha}</p>
+            </div>
+            <span style={{color:'#0d9488',fontSize:12}}>Ver →</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div className="page-header">
