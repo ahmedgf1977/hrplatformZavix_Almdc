@@ -386,6 +386,7 @@ function Sidebar({
 
 // ── Módulos (stubs listos para rellenar) ──────────────────
 function Dashboard({ user, isColaborador }: any) {
+  const [tabColab, setTabColab] = React.useState('resumen');
   if (isColaborador) return (
     <div style={{padding:'1.25rem'}} className="fade-in">
       <div style={{marginBottom:16}}>
@@ -393,51 +394,82 @@ function Dashboard({ user, isColaborador }: any) {
         <p className="page-sub">Bienvenido, {user?.name}</p>
       </div>
       <div style={{display:'grid', gridTemplateColumns:'220px 1fr', gap:14}}>
-        <div className="card" style={{textAlign:'center', padding:'1.5rem 1rem'}}>
+        <div className="card" style={{textAlign:'center', padding:'1.5rem 1rem', alignSelf:'start'}}>
           <div style={{width:72,height:72,borderRadius:'50%',background:'#0d9488',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:24,fontWeight:700,margin:'0 auto 12px'}}>
             {user?.name?.split(' ').slice(0,2).map((n:string)=>n[0]).join('')}
           </div>
           <p style={{margin:'0 0 4px',fontWeight:600,fontSize:14}}>{user?.name}</p>
-          <p style={{margin:'0 0 10px',fontSize:11,color:'#64748b'}}>{user?.role}</p>
+          <p style={{margin:'0 0 10px',fontSize:11,color:'#64748b'}}>{user?.position||user?.role}</p>
           <span style={{background:'#ccfbf1',color:'#0d9488',padding:'2px 10px',borderRadius:10,fontSize:10,fontWeight:600}}>
-            {user?.company === 'zavix' ? 'Zavix Brands' : 'Almacenes DC'}
+            {user?.company==='zavix'?'Zavix Brands':'Almacenes DC'}
           </span>
-          <div style={{borderTop:'0.5px solid #f1f5f9',marginTop:14,paddingTop:12,textAlign:'left'}}>
-            {[['✉️','Correo',user?.email],['🏢','Empresa',user?.company==='zavix'?'Zavix Brands':'Almacenes DC'],['💼','Puesto',user?.position||'—'],['🏗','Área',user?.area||'—'],['👤','Manager',user?.manager||'—'],['📱','Teléfono',user?.phone||'—'],
-              ['🏛','División',user?.division||'—'],
-              ['💰','Centro de Costos',user?.costCenter||'—'],
-              ['📄','Tipo de Contrato',user?.contractType||'—'],
-              ['⏰','Jornada',user?.schedule||'—'],
-              ['📅','Fecha Ingreso',user?.startDate||'—'],
-              ['🏖','Días de Vacaciones',user?.vacationDays?String(user.vacationDays):'—'],
-              ['📍','Ubicación',user?.workLocation||'—']].map(([ic,l,v])=>(
-              <div key={String(l)} style={{display:'flex',gap:8,padding:'4px 0'}}>
-                <span style={{fontSize:12,width:16,flexShrink:0}}>{ic}</span>
-                <div>
-                  <p style={{margin:0,fontSize:9,color:'#94a3b8'}}>{l}</p>
-                  <p style={{margin:0,fontSize:11,color:'#374151'}}>{v}</p>
-                </div>
+          <div style={{marginTop:16,textAlign:'left'}}>
+            {[['Portal','dashboard'],['Mi ficha','ficha'],['Mis Vacaciones','vacaciones'],['Comunicados','comunicados'],['Mis Evaluaciones','evaluaciones'],['Capacitaciones','capacitaciones'],['Mis Documentos','firma']].map(([l,id])=>(
+              <div key={l} onClick={()=>id==='ficha'?setTabColab('resumen'):window.dispatchEvent(new CustomEvent('navigate',{detail:id}))}
+                style={{padding:'8px 10px',borderRadius:7,cursor:'pointer',fontSize:12,color:'#374151',marginBottom:2}}
+                onMouseEnter={e=>(e.currentTarget.style.background='#f1f5f9')}
+                onMouseLeave={e=>(e.currentTarget.style.background='transparent')}>
+                {l}
               </div>
             ))}
           </div>
         </div>
-        <div style={{display:'flex',flexDirection:'column',gap:12}}>
-          <div className="card">
-            <p style={{fontWeight:600,fontSize:12,marginBottom:10,color:'#0d9488'}}>Mis Accesos Rápidos</p>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
-              {[['🏖','Mis Vacaciones','vacaciones'],['📢','Comunicados','comunicados'],['⭐','Mis Evaluaciones','evaluaciones'],['📚','Capacitaciones','capacitaciones'],['✍️','Mis Documentos','firma']].map(([e,l,id])=>(
-                <div key={String(id)} onClick={()=>window.dispatchEvent(new CustomEvent('navigate',{detail:id}))}
-                  style={{background:'#f8fafc',border:'0.5px solid #e2e8f0',borderRadius:8,padding:'12px',textAlign:'center',cursor:'pointer'}}>
-                  <p style={{fontSize:24,margin:'0 0 6px'}}>{e}</p>
-                  <p style={{margin:0,fontSize:11,fontWeight:500,color:'#374151'}}>{l}</p>
-                </div>
-              ))}
+        <div>
+          <div className="tab-nav" style={{marginBottom:14}}>
+            {[['resumen','Resumen'],['documentos','Documentos'],['historia','Historia'],['vacaciones','Vacaciones']].map(([id,lbl])=>(
+              <button key={id} className={`tab-btn${tabColab===id?' active':''}`} onClick={()=>setTabColab(id)}>{lbl}</button>
+            ))}
+          </div>
+          {tabColab==='resumen' && (
+            <div className="card">
+              <p style={{fontWeight:600,fontSize:12,marginBottom:12,color:'#0d9488'}}>Información General</p>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+                {[['Cargo',user?.position],['Área',user?.area],['División',user?.division],['Departamento',user?.department],['Empresa',user?.company==='zavix'?'Zavix Brands':'Almacenes DC'],['Supervisor',user?.manager],['Tipo de Contrato',user?.contractType],['Jornada',user?.schedule],['Ubicación',user?.workLocation],['Centro de Costos',user?.costCenter],['Fecha Ingreso',user?.startDate],['Teléfono',user?.phone],['Correo',user?.email]].map(([l,v])=>(
+                  <div key={String(l)} style={{padding:'8px 0',borderBottom:'0.5px solid #f1f5f9'}}>
+                    <p style={{margin:0,fontSize:10,color:'#94a3b8'}}>{l}</p>
+                    <p style={{margin:0,fontSize:12,fontWeight:500,color:'#374151'}}>{v||'—'}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="card">
-            <p style={{fontWeight:600,fontSize:12,marginBottom:8,color:'#0d9488'}}>Mi Información</p>
-            <p style={{margin:0,fontSize:11,color:'#64748b'}}>Completa tu perfil desde cada módulo. Si necesitas actualizar algún dato, contacta a RRHH.</p>
-          </div>
+          )}
+          {tabColab==='documentos' && (
+            <div className="card">
+              <p style={{fontWeight:600,fontSize:12,marginBottom:10,color:'#0d9488'}}>Mis Documentos</p>
+              <p style={{fontSize:11,color:'#64748b'}}>Ve al módulo de Firma Electrónica para ver y firmar tus documentos.</p>
+              <button className="btn-primary" style={{marginTop:10}} onClick={()=>window.dispatchEvent(new CustomEvent('navigate',{detail:'firma'}))}>Ver Documentos →</button>
+            </div>
+          )}
+          {tabColab==='historia' && (
+            <div className="card">
+              <p style={{fontWeight:600,fontSize:12,marginBottom:12,color:'#0d9488'}}>Historia Laboral</p>
+              <div style={{position:'relative',paddingLeft:20}}>
+                <div style={{position:'absolute',left:7,top:0,bottom:0,width:2,background:'#e2e8f0'}}/>
+                {[{fecha:'Fecha de Ingreso',evento:'Ingreso',desc:`Cargo: ${user?.position||'—'} · ${user?.area||'—'}`,color:'#0d9488'},{fecha:'Actualización',evento:'Datos actualizados',desc:'Información de perfil actualizada',color:'#6366f1'}].map((h,i)=>(
+                  <div key={i} style={{position:'relative',marginBottom:16,paddingLeft:16}}>
+                    <div style={{position:'absolute',left:-7,top:4,width:12,height:12,borderRadius:'50%',background:h.color,border:'2px solid white'}}/>
+                    <p style={{margin:0,fontSize:10,color:'#94a3b8'}}>{h.fecha}</p>
+                    <p style={{margin:'2px 0',fontSize:12,fontWeight:600,color:h.color}}>{h.evento}</p>
+                    <p style={{margin:0,fontSize:11,color:'#64748b'}}>{h.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {tabColab==='vacaciones' && (
+            <div className="card">
+              <p style={{fontWeight:600,fontSize:12,marginBottom:12,color:'#0d9488'}}>Mi Saldo de Vacaciones</p>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:16}}>
+                {[['Días LFT',user?.vacationDays||14,'#0d9488'],['Usados',3,'#6366f1'],['Disponibles',(user?.vacationDays||14)-3,'#10b981']].map(([l,v,c])=>(
+                  <div key={String(l)} style={{background:String(c)+'12',borderRadius:8,padding:12,textAlign:'center',border:`0.5px solid ${String(c)}30`}}>
+                    <p style={{margin:0,fontSize:22,fontWeight:700,color:String(c)}}>{v}</p>
+                    <p style={{margin:0,fontSize:10,color:'#64748b'}}>{l}</p>
+                  </div>
+                ))}
+              </div>
+              <button className="btn-primary" onClick={()=>window.dispatchEvent(new CustomEvent('navigate',{detail:'vacaciones'}))}>Solicitar Vacaciones →</button>
+            </div>
+          )}
         </div>
       </div>
     </div>
