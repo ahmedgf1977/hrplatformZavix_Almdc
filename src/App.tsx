@@ -2376,7 +2376,7 @@ function Reclutamiento() {
     </div>
   );
 }
-function Evaluaciones() {
+function Evaluaciones({ user, isColaborador }: any) {
   const [tab, setTab] = useState('empleados');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ emp:'', evaluador:'', tipo:'Desempeño 360°', periodo:'Q1 2025' });
@@ -2535,7 +2535,55 @@ function Evaluaciones() {
       </span>
     </div>
   );
-
+if (isColaborador) {
+  const misEvals = evals.filter(e => e.emp === user?.name || e.emp === 'Carlos López');
+  return (
+    <div style={{padding:'1.25rem'}} className="fade-in">
+      <div style={{marginBottom:16}}>
+        <h2 className="page-title">Mis Evaluaciones</h2>
+        <p className="page-sub">Desempeño · {user?.name}</p>
+      </div>
+      <div style={{display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:14}}>
+        {[
+          {e:'✅',l:'Completadas',v:misEvals.filter(e=>e.st==='Completado').length,c:'#10b981'},
+          {e:'⏳',l:'Pendientes',v:misEvals.filter(e=>e.st==='Pendiente').length,c:'#f59e0b'},
+          {e:'⭐',l:'Promedio',v:misEvals.filter(e=>e.score>0).length>0?(misEvals.filter(e=>e.score>0).reduce((a,e)=>a+e.score,0)/misEvals.filter(e=>e.score>0).length).toFixed(1):'—',c:'#6366f1'},
+        ].map(k=>(
+          <div key={k.l} className="kpi-card">
+            <div className="kpi-icon" style={{background:k.c+'18'}}><span style={{fontSize:15}}>{k.e}</span></div>
+            <div>
+              <p style={{margin:0,fontSize:18,fontWeight:700,color:k.c,lineHeight:1}}>{k.v}</p>
+              <p style={{margin:'2px 0 0',fontSize:10,color:'#64748b'}}>{k.l}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <p style={{fontWeight:600,fontSize:12,marginBottom:10}}>Mis Evaluaciones</p>
+        {misEvals.length===0
+          ? <p style={{fontSize:11,color:'#64748b'}}>No tienes evaluaciones registradas.</p>
+          : misEvals.map(ev=>(
+            <div key={ev.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 0',borderBottom:'0.5px solid #f1f5f9'}}>
+              <div>
+                <p style={{margin:0,fontSize:12,fontWeight:500}}>{ev.tipo}</p>
+                <p style={{margin:0,fontSize:11,color:'#64748b'}}>{ev.periodo} · Evaluador: {ev.evaluador}</p>
+              </div>
+              <div style={{display:'flex',alignItems:'center',gap:12}}>
+                <div style={{display:'flex',gap:2}}>
+                  {[1,2,3,4,5].map(i=>(
+                    <span key={i} style={{color:i<=Math.round(ev.score)?'#f59e0b':'#e2e8f0',fontSize:14}}>★</span>
+                  ))}
+                  <span style={{fontSize:10,color:'#94a3b8',marginLeft:4}}>{ev.score>0?ev.score.toFixed(1):'—'}</span>
+                </div>
+                <span style={{background:ev.st==='Completado'?'#f0fdf4':ev.st==='Pendiente'?'#fffbeb':'#eff6ff',color:ev.st==='Completado'?'#10b981':ev.st==='Pendiente'?'#f59e0b':'#3b82f6',padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:500}}>{ev.st}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
+}
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div className="page-header">
