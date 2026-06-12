@@ -451,7 +451,310 @@ function Alta() {
 }
 
 // ── Módulos stub ───────────────────────────────────────────
-function Vacaciones({ user, isColaborador }: any) { return <ModuloEnConstruccion nombre="Ausencias y Vacaciones" emoji="🏖" />; }
+// Componente Vacaciones — conectado a API real
+// Reemplaza la función Vacaciones() en App.tsx
+
+function Vacaciones({ user, isColaborador }: any) {
+  const [solicitudes, setSolicitudes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState('solicitudes');
+  const [filtro, setFiltro] = useState('todos');
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    employeeName: user?.name || '',
+    employeeId: user?.id || 0,
+    type: 'Vacaciones',
+    startDate: '',
+    endDate: '',
+    workingDays: 1,
+    reason: '',
+    company: user?.company || 'zavix',
+  });
+
+  const token = localStorage.getItem('hrp_token');
+
+  // Cargar solicitudes
+  const loadSolicitudes = () => {
+    setLoading(true);
+    fetch(`${API_URL}/vacations`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(data => { setSolicitudes(Array.isArray(data) ? data : []); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+
+  useEffect(() => { loadSolicitudes(); }, []);
+
+  // Calcular días hábiles entre fechas
+  const calcDias = (ini: string, fin: string) => {
+    if (!ini || !fin) return 0;
+    let dias = 0;
+    const start = new Date(ini);
+    const end = new Date(fin);
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dow = d.getDay();
+      if (dow !== 0 && dow !== 6) dias++;
+    }
+    return dias;
+  };
+
+  // Crear solicitud
+  const handleCreate = async () => {
+    if (!form.startDate || !form.endDate || !form.reason) return;
+    setSaving(true);
+    try {
+      const dias = calcDias(form.startDate, form.endDate);
+      await fetch(`${API_URL}/vacations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ...form, workingDays: dias }),
+      });
+      setForm({ employeeName: user?.name || '', employeeId: user?.id || 0, type: 'Vacaciones', startDate: '', endDate: '', workingDays: 1, reason: '', company: user?.company || 'zavix' });
+      setShowForm(false);
+      loadSolicitudes();
+    } catch (e) { console.error(e); }
+    finally { setSaving(false); }
+  };
+
+  // Aprobar
+  const aprobar = async (id: number) => {
+    await fetch(`${API_URL}/vacations/${id}/approve`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ approvedBy: user?.name || 'RRHH' }),
+    });
+    loadSolicitudes();
+  };
+
+  // Rechazar
+  const rechazar = async (id: number) => {
+    await fetch(`${API_URL}/vacations/${id}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ approvedBy: user?.name || 'RRHH', reason: 'Rechazado por RRHH' }),
+    });
+    loadSolicitudes();
+  };
+
+  const stColor: Record<string, string> = { Pendiente: '#f59e0b', Aprobado: '#10b981', Rechazado: '#ef4444' };
+  const stBg: Record<string, string> = { Pendiente: '#fffbeb', Aprobado: '#f0fdf4', Rechazado: '#fef2f2' };
+  const pendientes = solicitudes.filter(s => s.status === 'Pendiente');
+  const filtradas = filtro === 'todos' ? solicitudes : solicitudes.filter(s => s.status === filtro);
+
+  // ── Vista colaborador ──────────────────────────────────
+  if (isColaborador) return (
+    <div style={{ padding: '1.25rem' }} className="fade-in">
+      <div className="page-header">
+        <div><h2 className="page-title">Mis Vacaciones</h2><p className="page-sub">Mi saldo y solicitudes</p></div>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Solicitar</button>
+      </div>
+      {showForm && (
+        <div className="card" style={{ marginBottom: 14, border: '1px solid #ccfbf1' }}>
+          <p style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>Nueva Solicitud</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 10 }}>
+            <div><p className="label">Tipo</p>
+              <select className="select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+                {['Vacaciones', 'Permiso Personal', 'Licencia Médica', 'Maternidad/Paternidad', 'Duelo', 'Capacitación'].map(o => <option key={o}>{o}</option>)}
+              </select>
+            </div>
+            <div><p className="label">Fecha inicio *</p>
+              <input className="input" type="date" value={form.startDate} onChange={e => setForm({ ...form, startDate: e.target.value })} />
+            </div>
+            <div><p className="label">Fecha fin *</p>
+              <input className="input" type="date" value={form.endDate} onChange={e => setForm({ ...form, endDate: e.target.value })} />
+            </div>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <p className="label">Motivo *</p>
+            <input className="input" value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })} placeholder="Ej. Vacaciones anuales" />
+          </div>
+          {form.startDate && form.endDate && (
+            <p style={{ fontSize: 11, color: '#0d9488', marginBottom: 10 }}>
+              📅 {calcDias(form.startDate, form.endDate)} días hábiles
+            </p>
+          )}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn-primary" onClick={handleCreate} disabled={saving}>{saving ? 'Enviando...' : '✓ Enviar'}</button>
+            <button className="btn-secondary" onClick={() => setShowForm(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 14 }}>
+        {[['Días LFT', '14', '#0d9488'], ['Usados', solicitudes.filter(s => s.status === 'Aprobado' && s.employeeId === user?.id).reduce((a: number, s: any) => a + (s.workingDays || 0), 0), '#6366f1'], ['Pendientes', solicitudes.filter(s => s.status === 'Pendiente' && s.employeeId === user?.id).length, '#f59e0b']].map(([l, v, c]) => (
+          <div key={String(l)} className="kpi-card">
+            <div className="kpi-icon" style={{ background: String(c) + '18' }}><span style={{ fontSize: 15 }}>🏖</span></div>
+            <div><p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: String(c), lineHeight: 1 }}>{v}</p><p style={{ margin: '2px 0 0', fontSize: 10, color: '#64748b' }}>{l}</p></div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <p style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>Mis Solicitudes</p>
+        {loading ? <p style={{ fontSize: 11, color: '#64748b' }}>Cargando...</p>
+          : solicitudes.filter(s => s.employeeId === user?.id).length === 0
+            ? <p style={{ fontSize: 11, color: '#64748b' }}>No tienes solicitudes registradas.</p>
+            : solicitudes.filter(s => s.employeeId === user?.id).map((s: any) => (
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #f1f5f9' }}>
+                <div>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 500 }}>{s.type}</p>
+                  <p style={{ margin: 0, fontSize: 11, color: '#64748b' }}>{s.startDate} → {s.endDate} · {s.workingDays} días · {s.reason}</p>
+                </div>
+                <span style={{ background: stBg[s.status] || '#f1f5f9', color: stColor[s.status] || '#64748b', padding: '2px 8px', borderRadius: 10, fontSize: 10, fontWeight: 500 }}>{s.status}</span>
+              </div>
+            ))
+        }
+      </div>
+    </div>
+  );
+
+  // ── Vista admin ────────────────────────────────────────
+  return (
+    <div style={{ padding: '1.25rem' }} className="fade-in">
+      <div className="page-header">
+        <div><h2 className="page-title">Ausencias y Vacaciones</h2><p className="page-sub">LFT México · Zavix Brands & Almacenes DC</p></div>
+        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nueva Solicitud</button>
+      </div>
+
+      {/* KPIs */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 14 }}>
+        {[
+          { e: '⏳', l: 'Pendientes', v: solicitudes.filter(s => s.status === 'Pendiente').length, c: '#f59e0b' },
+          { e: '✅', l: 'Aprobadas', v: solicitudes.filter(s => s.status === 'Aprobado').length, c: '#10b981' },
+          { e: '❌', l: 'Rechazadas', v: solicitudes.filter(s => s.status === 'Rechazado').length, c: '#ef4444' },
+          { e: '📋', l: 'Total', v: solicitudes.length, c: '#6366f1' },
+        ].map(k => (
+          <div key={k.l} className="kpi-card">
+            <div className="kpi-icon" style={{ background: k.c + '18' }}><span style={{ fontSize: 15 }}>{k.e}</span></div>
+            <div><p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: k.c, lineHeight: 1 }}>{k.v}</p><p style={{ margin: '2px 0 0', fontSize: 10, color: '#64748b' }}>{k.l}</p></div>
+          </div>
+        ))}
+      </div>
+
+      {/* Formulario nueva solicitud */}
+      {showForm && (
+        <div className="card" style={{ marginBottom: 14, border: '1px solid #ccfbf1' }}>
+          <p style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>Nueva Solicitud de Ausencia</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 10 }}>
+            <div><p className="label">Colaborador *</p>
+              <input className="input" value={form.employeeName} onChange={e => setForm({ ...form, employeeName: e.target.value })} placeholder="Ej. María García" />
+            </div>
+            <div><p className="label">Tipo</p>
+              <select className="select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+                {['Vacaciones', 'Permiso Personal', 'Licencia Médica', 'Maternidad/Paternidad', 'Duelo', 'Capacitación'].map(o => <option key={o}>{o}</option>)}
+              </select>
+            </div>
+            <div><p className="label">Empresa</p>
+              <select className="select" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })}>
+                <option value="zavix">Zavix Brands</option>
+                <option value="adc">Almacenes DC</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+            <div><p className="label">Fecha inicio *</p><input className="input" type="date" value={form.startDate} onChange={e => setForm({ ...form, startDate: e.target.value })} /></div>
+            <div><p className="label">Fecha fin *</p><input className="input" type="date" value={form.endDate} onChange={e => setForm({ ...form, endDate: e.target.value })} /></div>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <p className="label">Motivo *</p>
+            <input className="input" value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })} placeholder="Ej. Vacaciones anuales" />
+          </div>
+          {form.startDate && form.endDate && (
+            <p style={{ fontSize: 11, color: '#0d9488', marginBottom: 10 }}>📅 {calcDias(form.startDate, form.endDate)} días hábiles</p>
+          )}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn-primary" onClick={handleCreate} disabled={saving}>{saving ? 'Guardando...' : '✓ Enviar Solicitud'}</button>
+            <button className="btn-secondary" onClick={() => setShowForm(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Alertas pendientes */}
+      {pendientes.length > 0 && (
+        <div style={{ background: '#fffbeb', border: '0.5px solid #fde68a', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 12, color: '#92400e' }}>⏳ {pendientes.length} solicitudes esperan tu aprobación</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {pendientes.map((s: any) => (
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'white', borderRadius: 7, padding: '6px 10px', border: '0.5px solid #fde68a' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: avColor(s.employeeName || 'A'), display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 10, fontWeight: 700, flexShrink: 0 }}>{initials(s.employeeName || '')}</div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 500 }}>{s.employeeName}</p>
+                  <p style={{ margin: 0, fontSize: 11, color: '#64748b' }}>{s.type} · {s.startDate} → {s.endDate} · {s.workingDays} días</p>
+                </div>
+                <button onClick={() => aprobar(s.id)} className="btn-primary btn-sm">✓ Aprobar</button>
+                <button onClick={() => rechazar(s.id)} className="btn-danger btn-sm">✗</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="tab-nav">
+        {[['solicitudes', '📋 Solicitudes'], ['saldos', '🏖 Saldos']].map(([id, lbl]) => (
+          <button key={id} className={`tab-btn${tab === id ? ' active' : ''}`} onClick={() => setTab(id)}>{lbl}</button>
+        ))}
+      </div>
+
+      {tab === 'solicitudes' && (
+        <div>
+          <div style={{ display: 'flex', gap: 5, marginBottom: 10 }}>
+            {[['todos', 'Todas'], ['Pendiente', 'Pendientes'], ['Aprobado', 'Aprobadas'], ['Rechazado', 'Rechazadas']].map(([v, l]) => (
+              <button key={v} onClick={() => setFiltro(v)} style={{ padding: '3px 10px', borderRadius: 6, border: '0.5px solid', fontSize: 11, cursor: 'pointer', borderColor: filtro === v ? '#0d9488' : '#e2e8f0', background: filtro === v ? '#ccfbf1' : 'white', color: filtro === v ? '#0d9488' : '#64748b' }}>{l}</button>
+            ))}
+          </div>
+          {loading ? <div className="card"><p style={{ fontSize: 11, color: '#64748b' }}>⏳ Cargando solicitudes...</p></div> : (
+            <div className="card">
+              {filtradas.length === 0
+                ? <p style={{ fontSize: 11, color: '#64748b', padding: '1rem 0' }}>No hay solicitudes {filtro !== 'todos' ? `con estado "${filtro}"` : ''}.</p>
+                : <table className="table">
+                  <thead>
+                    <tr>{['Colaborador', 'Tipo', 'Periodo', 'Días', 'Motivo', 'Estado', 'Acciones'].map(h => <th key={h}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {filtradas.map((s: any) => (
+                      <tr key={s.id}>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                            <div style={{ width: 26, height: 26, borderRadius: '50%', background: avColor(s.employeeName || 'A'), display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 9, fontWeight: 700, flexShrink: 0 }}>{initials(s.employeeName || '')}</div>
+                            <span style={{ fontWeight: 500 }}>{s.employeeName}</span>
+                          </div>
+                        </td>
+                        <td style={{ color: '#64748b' }}>{s.type}</td>
+                        <td style={{ fontSize: 10, color: '#64748b' }}>{s.startDate}<br />{s.endDate}</td>
+                        <td style={{ fontWeight: 600 }}>{s.workingDays}</td>
+                        <td style={{ fontSize: 11, color: '#64748b', maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.reason}</td>
+                        <td>
+                          <span style={{ background: stBg[s.status] || '#f1f5f9', color: stColor[s.status] || '#64748b', padding: '2px 8px', borderRadius: 10, fontSize: 10, fontWeight: 500 }}>{s.status}</span>
+                        </td>
+                        <td>
+                          {s.status === 'Pendiente' && (
+                            <div style={{ display: 'flex', gap: 4 }}>
+                              <button onClick={() => aprobar(s.id)} className="btn-primary btn-sm">✓</button>
+                              <button onClick={() => rechazar(s.id)} className="btn-danger btn-sm">✗</button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              }
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'saldos' && (
+        <div className="card">
+          <div style={{ background: '#f0fdf4', border: '0.5px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', marginBottom: 12 }}>
+            <p style={{ margin: 0, fontSize: 11, color: '#065f46' }}>📋 <strong>LFT México:</strong> Los días se calculan según la antigüedad del colaborador.</p>
+          </div>
+          <p style={{ fontSize: 11, color: '#64748b' }}>Los saldos individuales se conectarán cuando se integre el módulo de nómina. Por ahora puedes ver el historial de solicitudes por colaborador en la pestaña Solicitudes.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Comunicados({ user, isColaborador }: any) { return <ModuloEnConstruccion nombre="Comunicados" emoji="📢" />; }
 function Reclutamiento() { return <ModuloEnConstruccion nombre="Reclutamiento" emoji="🎯" />; }
 function Evaluaciones({ user, isColaborador }: any) { return <ModuloEnConstruccion nombre="Evaluaciones" emoji="⭐" />; }
