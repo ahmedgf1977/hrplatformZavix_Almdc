@@ -329,9 +329,11 @@ function Alta() {
     try{
       const token=localStorage.getItem('hrp_token')
       const res=await fetch(`${API_URL}/employees`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({...form,name:`${form.firstName} ${form.lastName1} ${form.lastName2}`.trim(),status:'Activo'})})
-      if(!res.ok){const d=await res.json();throw new Error(d.message||'Error al crear colaborador')}
-      setSuccess(true)
-    }catch(e:any){setError(e.message)}finally{setLoading(false)}
+if(!res.ok){const d=await res.json();throw new Error(d.message||'Error al crear colaborador')}
+const emp=await res.json()
+await fetch(`${API_URL}/users/from-employee`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({employeeId:emp.id,firstName:form.firstName,lastName1:form.lastName1,email:form.email,imss:form.imss,company:form.company,position:form.position,area:form.area,department:form.department,manager:form.manager,phone:form.phone,contractType:form.contractType,schedule:form.schedule,startDate:form.startDate})})
+setSuccess(true)
+}catch(e:any){setError(e.message)}finally{setLoading(false)}
   }
   if(success) return (
     <div style={{padding:'2rem',textAlign:'center'}} className="fade-in">
