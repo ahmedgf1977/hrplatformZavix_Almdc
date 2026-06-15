@@ -54,32 +54,32 @@ function Login({ onLogin }: { onLogin: (user:any, token:string) => void }) {
     finally { setLoading(false) }
   }
   return (
-    <div style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,background:'#f8fafc'}}>
+    <div style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,background:'linear-gradient(135deg, #2A3F9E 0%, #5B6EE8 55%, #AEB8F5 100%)'}}>
       <div style={{textAlign:'center',marginBottom:32}}>
         <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:24,marginBottom:16}}>
-          <img src="/ZAVIX brands.jpg" alt="Zavix Brands" style={{height:80,objectFit:'contain'}}/>
-          <div style={{width:1,height:40,background:'#e2e8f0'}}/>
-          <img src="/Almacenes DC.jpg" alt="Almacenes DC" style={{height:80,objectFit:'contain'}}/>
+          <img src="/ZAVIX brands.jpg" alt="Zavix Brands" style={{height:80,objectFit:'contain',borderRadius:12,background:'#fff',padding:6}}/>
+          <div style={{width:1,height:40,background:'rgba(255,255,255,0.35)'}}/>
+          <img src="/Almacenes DC.jpg" alt="Almacenes DC" style={{height:80,objectFit:'contain',borderRadius:12,background:'#fff',padding:6}}/>
         </div>
-        <h1 style={{color:'#0f172a',fontSize:26,fontWeight:800,margin:'0 0 6px'}}>HRPlatform</h1>
-        <p style={{color:'#64748b',fontSize:13,margin:0}}>Zavix Brands · Almacenes DC</p>
+        <h1 style={{color:'#fff',fontSize:26,fontWeight:800,margin:'0 0 6px'}}>HRPlatform</h1>
+        <p style={{color:'rgba(255,255,255,0.85)',fontSize:13,margin:0}}>Zavix Brands · Almacenes DC</p>
       </div>
-      <div style={{width:'100%',maxWidth:380,background:'white',border:'0.5px solid #e2e8f0',borderRadius:16,padding:28,boxShadow:'0 4px 24px rgba(0,0,0,.06)'}}>
+      <div style={{width:'100%',maxWidth:380,background:'white',border:'0.5px solid #e2e8f0',borderRadius:24,padding:28,boxShadow:'0 12px 40px rgba(20,30,90,0.25)'}}>
         <p style={{color:'#64748b',fontSize:11,textAlign:'center',marginBottom:20,letterSpacing:2,textTransform:'uppercase'}}>Iniciar Sesión</p>
         <div style={{marginBottom:12}}>
           <p style={{margin:'0 0 4px',color:'#374151',fontSize:11}}>Correo institucional</p>
-          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="usuario@zavixbrands.com" style={{width:'100%',background:'#f8fafc',border:'0.5px solid #e2e8f0',borderRadius:8,padding:'10px 12px',color:'#0f172a',fontSize:13,outline:'none',boxSizing:'border-box'}}/>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="usuario@zavixbrands.com" style={{width:'100%',background:'#f8fafc',border:'0.5px solid #e2e8f0',borderRadius:10,padding:'10px 12px',color:'#0f172a',fontSize:13,outline:'none',boxSizing:'border-box'}}/>
         </div>
         <div style={{marginBottom:16}}>
           <p style={{margin:'0 0 4px',color:'#374151',fontSize:11}}>Contraseña</p>
-          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLogin()} placeholder="••••••••" style={{width:'100%',background:'#f8fafc',border:'0.5px solid #e2e8f0',borderRadius:8,padding:'10px 12px',color:'#0f172a',fontSize:13,outline:'none',boxSizing:'border-box'}}/>
+          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLogin()} placeholder="••••••••" style={{width:'100%',background:'#f8fafc',border:'0.5px solid #e2e8f0',borderRadius:10,padding:'10px 12px',color:'#0f172a',fontSize:13,outline:'none',boxSizing:'border-box'}}/>
         </div>
-        {error && <div style={{background:'#fee2e2',color:'#991b1b',borderRadius:8,padding:'8px 12px',fontSize:12,marginBottom:12}}>{error}</div>}
-        <button onClick={handleLogin} disabled={loading} style={{width:'100%',background:loading?'#94a3b8':'#f97316',color:'white',border:'none',borderRadius:8,padding:'11px',fontSize:13,fontWeight:600,cursor:loading?'not-allowed':'pointer',transition:'background .2s'}}>
+        {error && <div style={{background:'#fee2e2',color:'#991b1b',borderRadius:10,padding:'8px 12px',fontSize:12,marginBottom:12}}>{error}</div>}
+        <button onClick={handleLogin} disabled={loading} style={{width:'100%',background:loading?'#94a3b8':'#1D1D1F',color:'white',border:'none',borderRadius:999,padding:'11px',fontSize:13,fontWeight:600,cursor:loading?'not-allowed':'pointer',transition:'background .2s'}}>
           {loading ? 'Conectando...' : 'Entrar →'}
         </button>
       </div>
-      <p style={{color:'#cbd5e1',fontSize:10,marginTop:20}}>HRPlatform v1.0 · Producción</p>
+      <p style={{color:'rgba(255,255,255,0.6)',fontSize:10,marginTop:20}}>HRPlatform v1.0 · Producción</p>
     </div>
   )
 }
