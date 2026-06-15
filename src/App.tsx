@@ -822,14 +822,14 @@ export default function App() {
   const isColaborador = user?.role === 'colaborador';
   const ActiveView = VIEWS[active] || Dashboard;
   return (
-    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
+    <div style={{display:'flex',height:'100vh',overflow:'hidden',background:'linear-gradient(135deg, #2A3F9E 0%, #5B6EE8 55%, #AEB8F5 100%)'}}>
       <Sidebar user={user} active={active} setActive={setActive} company={company} setCompany={setCompany} onLogout={()=>{ setUser(null); setToken(''); localStorage.removeItem('hrp_token') }}/>
-      <main style={{flex:1,overflow:'auto',background:'#f8fafc',display:'flex',flexDirection:'column'}}>
-        <div style={{background:'white',borderBottom:'0.5px solid #e2e8f0',padding:'8px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
-          <div><p style={{margin:0,fontWeight:600,fontSize:13}}>{MODULES.find(m=>m.id===active)?.emoji} {MODULES.find(m=>m.id===active)?.label}</p></div>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
+      <main style={{flex:1,overflow:'auto',background:'transparent',display:'flex',flexDirection:'column'}}>
+        <div style={{margin:'14px 16px 0',background:'rgba(255,255,255,0.9)',backdropFilter:'blur(10px)',WebkitBackdropFilter:'blur(10px)',borderRadius:20,padding:'10px 18px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0,boxShadow:'0 4px 20px rgba(20,30,90,0.10)'}}>
+          <div><p style={{margin:0,fontWeight:600,fontSize:13,color:'#1D1D1F'}}>{MODULES.find(m=>m.id===active)?.emoji} {MODULES.find(m=>m.id===active)?.label}</p></div>
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
             <span style={{fontSize:13}}>🔔</span>
-            <div style={{width:26,height:26,borderRadius:'50%',background:user.color,display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:10,fontWeight:700}}>{user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}</div>
+            <div style={{width:28,height:28,borderRadius:'50%',background:'#2A3F9E',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:10,fontWeight:700}}>{user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}</div>
           </div>
         </div>
         <ActiveView user={user} isColaborador={isColaborador} />
