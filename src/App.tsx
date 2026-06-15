@@ -90,26 +90,43 @@ function Sidebar({ user, active, setActive, company, setCompany, onLogout }:any)
   const mods = isAdmin ? MODULES : MODULES.filter((m) => m.roles.includes('colab'));
   const co = COMPANIES.find((c) => c.id === company);
   return (
-    <div style={{width:192,background:'#0d1f2d',display:'flex',flexDirection:'column',flexShrink:0,minHeight:'100vh'}}>
-      <div style={{padding:'14px 12px 8px'}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
-          <div style={{width:28,height:28,background:'#0d9488',borderRadius:7,display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:900,fontSize:12}}>HR</div>
-          <div><p style={{margin:0,color:'white',fontWeight:800,fontSize:13}}>HRPlatform</p><p style={{margin:0,color:'#64a09a',fontSize:9}}>v1.0</p></div>
+    <div style={{width:200,background:'rgba(255,255,255,0.10)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',borderRight:'1px solid rgba(255,255,255,0.15)',display:'flex',flexDirection:'column',flexShrink:0,minHeight:'100vh'}}>
+      <div style={{padding:'16px 14px 10px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+          <div style={{width:30,height:30,background:'#fff',borderRadius:9,display:'flex',alignItems:'center',justifyContent:'center',color:'#2A3F9E',fontWeight:900,fontSize:12}}>HR</div>
+          <div>
+            <p style={{margin:0,color:'white',fontWeight:800,fontSize:13}}>HRPlatform</p>
+            <p style={{margin:0,color:'rgba(255,255,255,0.55)',fontSize:9}}>v1.0</p>
+          </div>
         </div>
         <div style={{display:'flex',gap:4}}>
-          {COMPANIES.map((c) => (<button key={c.id} onClick={() => setCompany(c.id)} style={{flex:1,padding:'3px 0',borderRadius:6,border:'none',cursor:'pointer',fontWeight:600,fontSize:10,transition:'all .15s',background:company===c.id?c.color:c.color+'25',color:company===c.id?'white':c.color}}>{c.short}</button>))}
+          {COMPANIES.map((c) => (
+            <button key={c.id} onClick={() => setCompany(c.id)}
+              style={{flex:1,padding:'4px 0',borderRadius:20,border:'none',cursor:'pointer',fontWeight:600,fontSize:10,transition:'all .15s',
+                background:company===c.id?'#fff':'rgba(255,255,255,0.15)',
+                color:company===c.id?'#2A3F9E':'rgba(255,255,255,0.8)'}}>
+              {c.short}
+            </button>
+          ))}
         </div>
-        {co && <p style={{margin:'4px 0 0',fontSize:9,color:co.color,textAlign:'center'}}>{co.name}</p>}
+        {co && <p style={{margin:'6px 0 0',fontSize:9,color:'rgba(255,255,255,0.65)',textAlign:'center'}}>{co.name}</p>}
       </div>
-      <nav style={{flex:1,padding:'4px 6px',overflowY:'auto'}}>
+      <nav style={{flex:1,padding:'4px 8px',overflowY:'auto'}}>
         {mods.map((m) => (<button key={m.id} onClick={() => setActive(m.id)} className={`sidebar-item${active === m.id ? ' active' : ''}`}><span style={{fontSize:12}}>{m.emoji}</span><span>{m.label}</span></button>))}
       </nav>
-      <div style={{padding:'10px 10px',borderTop:'0.5px solid #1e3a4a'}}>
+      <div style={{padding:'12px 12px',borderTop:'1px solid rgba(255,255,255,0.12)'}}>
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-          <div style={{width:26,height:26,borderRadius:'50%',background:user.color,display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:10,fontWeight:700,flexShrink:0}}>{user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}</div>
-          <div style={{flex:1,minWidth:0}}><p style={{margin:0,color:'white',fontSize:10,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.name}</p><p style={{margin:0,color:'#64a09a',fontSize:9}}>{user.role}</p></div>
+          <div style={{width:28,height:28,borderRadius:'50%',background:'#fff',display:'flex',alignItems:'center',justifyContent:'center',color:'#2A3F9E',fontSize:10,fontWeight:700,flexShrink:0}}>
+            {user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <p style={{margin:0,color:'white',fontSize:10,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.name}</p>
+            <p style={{margin:0,color:'rgba(255,255,255,0.55)',fontSize:9}}>{user.role}</p>
+          </div>
         </div>
-        <button onClick={onLogout} style={{width:'100%',background:'rgba(255,255,255,.05)',border:'0.5px solid rgba(255,255,255,.1)',borderRadius:6,padding:'4px 8px',color:'#94a3b8',fontSize:10,cursor:'pointer'}}>← Cerrar sesión</button>
+        <button onClick={onLogout} style={{width:'100%',background:'rgba(0,0,0,0.18)',border:'1px solid rgba(255,255,255,0.15)',borderRadius:20,padding:'5px 8px',color:'rgba(255,255,255,0.85)',fontSize:10,cursor:'pointer'}}>
+          ← Cerrar sesión
+        </button>
       </div>
     </div>
   );
