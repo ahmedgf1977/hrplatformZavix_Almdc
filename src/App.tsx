@@ -90,41 +90,41 @@ function Sidebar({ user, active, setActive, company, setCompany, onLogout }:any)
   const mods = isAdmin ? MODULES : MODULES.filter((m) => m.roles.includes('colab'));
   const co = COMPANIES.find((c) => c.id === company);
   return (
-    <div style={{width:200,background:'rgba(255,255,255,0.10)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',borderRight:'1px solid rgba(255,255,255,0.15)',display:'flex',flexDirection:'column',flexShrink:0,minHeight:'100vh'}}>
-      <div style={{padding:'16px 14px 10px'}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
-          <div style={{width:30,height:30,background:'#fff',borderRadius:9,display:'flex',alignItems:'center',justifyContent:'center',color:'#2A3F9E',fontWeight:900,fontSize:12}}>HR</div>
+    <div style={{width:248,background:'rgba(255,255,255,0.10)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',borderRight:'1px solid rgba(255,255,255,0.15)',display:'flex',flexDirection:'column',flexShrink:0,minHeight:'100vh'}}>
+      <div style={{padding:'18px 16px 12px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
+          <div style={{width:36,height:36,background:'#fff',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',color:'#2A3F9E',fontWeight:900,fontSize:14}}>HR</div>
           <div>
-            <p style={{margin:0,color:'white',fontWeight:800,fontSize:13}}>HRPlatform</p>
-            <p style={{margin:0,color:'rgba(255,255,255,0.55)',fontSize:9}}>v1.0</p>
+            <p style={{margin:0,color:'white',fontWeight:800,fontSize:15}}>HRPlatform</p>
+            <p style={{margin:0,color:'rgba(255,255,255,0.55)',fontSize:10}}>v1.0</p>
           </div>
         </div>
-        <div style={{display:'flex',gap:4}}>
+        <div style={{display:'flex',gap:6}}>
           {COMPANIES.map((c) => (
             <button key={c.id} onClick={() => setCompany(c.id)}
-              style={{flex:1,padding:'4px 0',borderRadius:20,border:'none',cursor:'pointer',fontWeight:600,fontSize:10,transition:'all .15s',
+              style={{flex:1,padding:'7px 0',borderRadius:20,border:'none',cursor:'pointer',fontWeight:600,fontSize:12,transition:'all .15s',
                 background:company===c.id?'#fff':'rgba(255,255,255,0.15)',
                 color:company===c.id?'#2A3F9E':'rgba(255,255,255,0.8)'}}>
               {c.short}
             </button>
           ))}
         </div>
-        {co && <p style={{margin:'6px 0 0',fontSize:9,color:'rgba(255,255,255,0.65)',textAlign:'center'}}>{co.name}</p>}
+        {co && <p style={{margin:'8px 0 0',fontSize:11,color:'rgba(255,255,255,0.7)',textAlign:'center'}}>{co.name}</p>}
       </div>
-      <nav style={{flex:1,padding:'4px 8px',overflowY:'auto'}}>
-        {mods.map((m) => (<button key={m.id} onClick={() => setActive(m.id)} className={`sidebar-item${active === m.id ? ' active' : ''}`}><span style={{fontSize:12}}>{m.emoji}</span><span>{m.label}</span></button>))}
+      <nav style={{flex:1,padding:'4px 10px',overflowY:'auto'}}>
+        {mods.map((m) => (<button key={m.id} onClick={() => setActive(m.id)} className={`sidebar-item${active === m.id ? ' active' : ''}`}><span style={{fontSize:17}}>{m.emoji}</span><span>{m.label}</span></button>))}
       </nav>
-      <div style={{padding:'12px 12px',borderTop:'1px solid rgba(255,255,255,0.12)'}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-          <div style={{width:28,height:28,borderRadius:'50%',background:'#fff',display:'flex',alignItems:'center',justifyContent:'center',color:'#2A3F9E',fontSize:10,fontWeight:700,flexShrink:0}}>
+      <div style={{padding:'14px 14px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:11,marginBottom:11,padding:'10px',background:'rgba(255,255,255,0.08)',borderRadius:12}}>
+          <div style={{width:40,height:40,borderRadius:'50%',background:'#fff',display:'flex',alignItems:'center',justifyContent:'center',color:'#2A3F9E',fontSize:14,fontWeight:700,flexShrink:0}}>
             {user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
           </div>
           <div style={{flex:1,minWidth:0}}>
-            <p style={{margin:0,color:'white',fontSize:10,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.name}</p>
-            <p style={{margin:0,color:'rgba(255,255,255,0.55)',fontSize:9}}>{user.role}</p>
+            <p style={{margin:0,color:'white',fontSize:13,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.name}</p>
+            <p style={{margin:0,color:'rgba(255,255,255,0.6)',fontSize:11}}>{user.role}</p>
           </div>
         </div>
-        <button onClick={onLogout} style={{width:'100%',background:'rgba(0,0,0,0.18)',border:'1px solid rgba(255,255,255,0.15)',borderRadius:20,padding:'5px 8px',color:'rgba(255,255,255,0.85)',fontSize:10,cursor:'pointer'}}>
+        <button onClick={onLogout} style={{width:'100%',background:'rgba(0,0,0,0.2)',border:'1px solid rgba(255,255,255,0.18)',borderRadius:12,padding:'10px 12px',color:'rgba(255,255,255,0.9)',fontSize:13,fontWeight:500,cursor:'pointer'}}>
           ← Cerrar sesión
         </button>
       </div>
@@ -364,30 +364,30 @@ setSuccess(true)
     </div>
   )
   return (
-    <div style={{padding:'1.25rem',maxWidth:680,margin:'0 auto'}} className="fade-in">
-      <div style={{marginBottom:'1.25rem'}}><h2 style={{margin:0,fontSize:17,fontWeight:600}}>Alta de Colaboradores</h2><p style={{margin:'2px 0 0',fontSize:11,color:'#64748b'}}>Registro de nuevo colaborador · Zavix Brands & Almacenes DC</p></div>
-      <div style={{display:'flex',alignItems:'center',marginBottom:24}}>
+    <div style={{padding:'1.75rem 2rem',maxWidth:920,margin:'0 auto'}} className="fade-in">
+      <div style={{marginBottom:'1.75rem'}}><h2 className="page-title">Alta de Colaboradores</h2><p className="page-sub">Registro de nuevo colaborador · Zavix Brands & Almacenes DC</p></div>
+      <div style={{display:'flex',alignItems:'center',marginBottom:30}}>
         {STEPS.map((s,i)=>(
           <div key={i} style={{display:'flex',alignItems:'center',flex:i<STEPS.length-1?1:'auto'}}>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
-              <div style={{width:28,height:28,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:600,transition:'all .2s',background:step>i+1?'#0d9488':step===i+1?'#0d9488':'white',color:step>=i+1?'white':'#94a3b8',border:`2px solid ${step>=i+1?'#0d9488':'#e2e8f0'}`}}>{step>i+1?'✓':i+1}</div>
-              <span style={{fontSize:9,color:step===i+1?'#0d9488':'#94a3b8',fontWeight:step===i+1?600:400,whiteSpace:'nowrap'}}>{s}</span>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:7}}>
+              <div style={{width:40,height:40,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,transition:'all .2s',background:step>i+1?'#10b981':step===i+1?'#10b981':'rgba(255,255,255,0.92)',color:step>=i+1?'white':'#5B6EE8',border:`2px solid ${step>=i+1?'#10b981':'rgba(255,255,255,0.7)'}`,boxShadow:'0 2px 8px rgba(20,30,90,0.18)'}}>{step>i+1?'✓':i+1}</div>
+              <span style={{fontSize:13,color:step===i+1?'#ffffff':'rgba(255,255,255,0.7)',fontWeight:step===i+1?700:500,whiteSpace:'nowrap'}}>{s}</span>
             </div>
-            {i<STEPS.length-1&&<div style={{flex:1,height:2,background:step>i+1?'#0d9488':'#e2e8f0',margin:'0 6px',marginBottom:14}}/>}
+            {i<STEPS.length-1&&<div style={{flex:1,height:3,borderRadius:2,background:step>i+1?'#10b981':'rgba(255,255,255,0.3)',margin:'0 8px',marginBottom:22}}/>}
           </div>
         ))}
       </div>
       <div className="card">
         {step===1&&(
           <div className="fade-in">
-            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>👤 Datos Personales</p>
+            <p style={{fontWeight:700,fontSize:15,marginBottom:16,color:'#0d9488'}}>👤 Datos Personales</p>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:10}}>
-              <div><p className="label">Nombre(s) *</p><input className="input" value={form.firstName} onChange={e=>f('firstName',e.target.value)} placeholder="María"/></div>
-              <div><p className="label">Apellido Paterno *</p><input className="input" value={form.lastName1} onChange={e=>f('lastName1',e.target.value)} placeholder="García"/></div>
+              <div><p className="label">Nombre(s) <span style={{color:'#ef4444'}}>*</span></p><input className="input" value={form.firstName} onChange={e=>f('firstName',e.target.value)} placeholder="María"/></div>
+              <div><p className="label">Apellido Paterno <span style={{color:'#ef4444'}}>*</span></p><input className="input" value={form.lastName1} onChange={e=>f('lastName1',e.target.value)} placeholder="García"/></div>
               <div><p className="label">Apellido Materno</p><input className="input" value={form.lastName2} onChange={e=>f('lastName2',e.target.value)} placeholder="López"/></div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
-              <div><p className="label">Correo institucional *</p><input className="input" type="email" value={form.email} onChange={e=>f('email',e.target.value)} placeholder="m.garcia@zavixbrands.com"/></div>
+              <div><p className="label">Correo institucional <span style={{color:'#ef4444'}}>*</span></p><input className="input" type="email" value={form.email} onChange={e=>f('email',e.target.value)} placeholder="m.garcia@zavixbrands.com"/></div>
               <div><p className="label">Teléfono</p><input className="input" value={form.phone} onChange={e=>f('phone',e.target.value)} placeholder="+52 55 1234-5678"/></div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10}}>
@@ -401,14 +401,14 @@ setSuccess(true)
         )}
         {step===2&&(
           <div className="fade-in">
-            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>💼 Datos Laborales</p>
+            <p style={{fontWeight:700,fontSize:15,marginBottom:16,color:'#0d9488'}}>💼 Datos Laborales</p>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
-              <div><p className="label">Empresa *</p><select className="select" value={form.company} onChange={e=>f('company',e.target.value)}><option value="zavix">Zavix Brands</option><option value="adc">Almacenes DC</option></select></div>
-              <div><p className="label">Fecha de Ingreso *</p><input className="input" type="date" value={form.startDate} onChange={e=>f('startDate',e.target.value)}/></div>
+              <div><p className="label">Empresa <span style={{color:'#ef4444'}}>*</span></p><select className="select" value={form.company} onChange={e=>f('company',e.target.value)}><option value="zavix">Zavix Brands</option><option value="adc">Almacenes DC</option></select></div>
+              <div><p className="label">Fecha de Ingreso <span style={{color:'#ef4444'}}>*</span></p><input className="input" type="date" value={form.startDate} onChange={e=>f('startDate',e.target.value)}/></div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
-              <div><p className="label">Puesto *</p><input className="input" value={form.position} onChange={e=>f('position',e.target.value)} placeholder="Gerente de Ventas"/></div>
-              <div><p className="label">Área *</p><input className="input" value={form.area} onChange={e=>f('area',e.target.value)} placeholder="Ventas"/></div>
+              <div><p className="label">Puesto <span style={{color:'#ef4444'}}>*</span></p><input className="input" value={form.position} onChange={e=>f('position',e.target.value)} placeholder="Gerente de Ventas"/></div>
+              <div><p className="label">Área <span style={{color:'#ef4444'}}>*</span></p><input className="input" value={form.area} onChange={e=>f('area',e.target.value)} placeholder="Ventas"/></div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
               <div><p className="label">Departamento</p><input className="input" value={form.department} onChange={e=>f('department',e.target.value)} placeholder="Dirección Comercial"/></div>
@@ -422,7 +422,7 @@ setSuccess(true)
         )}
         {step===3&&(
           <div className="fade-in">
-            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>🏛 Datos Fiscales y Bancarios</p>
+            <p style={{fontWeight:700,fontSize:15,marginBottom:16,color:'#0d9488'}}>🏛 Datos Fiscales y Bancarios</p>
             <div style={{background:'#fffbeb',border:'0.5px solid #fde68a',borderRadius:8,padding:'8px 12px',marginBottom:14}}><p style={{margin:0,fontSize:11,color:'#92400e'}}>⚠️ Estos datos son opcionales en el alta inicial.</p></div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
               <div><p className="label">CURP (18 caracteres)</p><input className="input" value={form.curp} onChange={e=>f('curp',e.target.value.toUpperCase())} placeholder="XAXX010101HNEXXXA4" maxLength={18}/></div>
@@ -437,7 +437,7 @@ setSuccess(true)
         )}
         {step===4&&(
           <div className="fade-in">
-            <p style={{fontWeight:600,fontSize:13,marginBottom:14,color:'#0d9488'}}>✅ Confirmación</p>
+            <p style={{fontWeight:700,fontSize:15,marginBottom:16,color:'#0d9488'}}>✅ Confirmación</p>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
               <div style={{background:'#f8fafc',borderRadius:8,padding:'12px'}}>
                 <p style={{margin:'0 0 8px',fontSize:11,fontWeight:600,color:'#64748b'}}>DATOS PERSONALES</p>
@@ -469,10 +469,7 @@ setSuccess(true)
   )
 }
 
-// ── Módulos stub ───────────────────────────────────────────
-// Componente Vacaciones — conectado a API real
-// Reemplaza la función Vacaciones() en App.tsx
-
+// ── Vacaciones — conectado a API real ──────────────────────
 function Vacaciones({ user, isColaborador }: any) {
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -493,7 +490,6 @@ function Vacaciones({ user, isColaborador }: any) {
 
   const token = localStorage.getItem('hrp_token');
 
-  // Cargar solicitudes
   const loadSolicitudes = () => {
     setLoading(true);
     fetch(`${API_URL}/vacations`, { headers: { Authorization: `Bearer ${token}` } })
@@ -504,7 +500,6 @@ function Vacaciones({ user, isColaborador }: any) {
 
   useEffect(() => { loadSolicitudes(); }, []);
 
-  // Calcular días hábiles entre fechas
   const calcDias = (ini: string, fin: string) => {
     if (!ini || !fin) return 0;
     let dias = 0;
@@ -517,7 +512,6 @@ function Vacaciones({ user, isColaborador }: any) {
     return dias;
   };
 
-  // Crear solicitud
   const handleCreate = async () => {
     if (!form.startDate || !form.endDate || !form.reason) return;
     setSaving(true);
@@ -535,7 +529,6 @@ function Vacaciones({ user, isColaborador }: any) {
     finally { setSaving(false); }
   };
 
-  // Aprobar
   const aprobar = async (id: number) => {
     await fetch(`${API_URL}/vacations/${id}/approve`, {
       method: 'PUT',
@@ -545,7 +538,6 @@ function Vacaciones({ user, isColaborador }: any) {
     loadSolicitudes();
   };
 
-  // Rechazar
   const rechazar = async (id: number) => {
     await fetch(`${API_URL}/vacations/${id}/reject`, {
       method: 'PUT',
@@ -560,7 +552,6 @@ function Vacaciones({ user, isColaborador }: any) {
   const pendientes = solicitudes.filter(s => s.status === 'Pendiente');
   const filtradas = filtro === 'todos' ? solicitudes : solicitudes.filter(s => s.status === filtro);
 
-  // ── Vista colaborador ──────────────────────────────────
   if (isColaborador) return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div className="page-header">
@@ -625,7 +616,6 @@ function Vacaciones({ user, isColaborador }: any) {
     </div>
   );
 
-  // ── Vista admin ────────────────────────────────────────
   return (
     <div style={{ padding: '1.25rem' }} className="fade-in">
       <div className="page-header">
@@ -633,7 +623,6 @@ function Vacaciones({ user, isColaborador }: any) {
         <button className="btn-primary" onClick={() => setShowForm(!showForm)}>+ Nueva Solicitud</button>
       </div>
 
-      {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 14 }}>
         {[
           { e: '⏳', l: 'Pendientes', v: solicitudes.filter(s => s.status === 'Pendiente').length, c: '#f59e0b' },
@@ -648,7 +637,6 @@ function Vacaciones({ user, isColaborador }: any) {
         ))}
       </div>
 
-      {/* Formulario nueva solicitud */}
       {showForm && (
         <div className="card" style={{ marginBottom: 14, border: '1px solid #ccfbf1' }}>
           <p style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>Nueva Solicitud de Ausencia</p>
@@ -686,7 +674,6 @@ function Vacaciones({ user, isColaborador }: any) {
         </div>
       )}
 
-      {/* Alertas pendientes */}
       {pendientes.length > 0 && (
         <div style={{ background: '#fffbeb', border: '0.5px solid #fde68a', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
           <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 12, color: '#92400e' }}>⏳ {pendientes.length} solicitudes esperan tu aprobación</p>
@@ -706,7 +693,6 @@ function Vacaciones({ user, isColaborador }: any) {
         </div>
       )}
 
-      {/* Tabs */}
       <div className="tab-nav">
         {[['solicitudes', '📋 Solicitudes'], ['saldos', '🏖 Saldos']].map(([id, lbl]) => (
           <button key={id} className={`tab-btn${tab === id ? ' active' : ''}`} onClick={() => setTab(id)}>{lbl}</button>
