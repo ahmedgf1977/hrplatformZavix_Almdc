@@ -364,7 +364,7 @@ setSuccess(true)
     </div>
   )
   return (
-    <div style={{padding:'1.75rem 2rem',maxWidth:920,margin:'0 auto'}} className="fade-in">
+    <div style={{padding:'2rem 2.5rem',maxWidth:1180,margin:'0 auto'}} className="fade-in">
       <div style={{marginBottom:'1.75rem'}}><h2 className="page-title">Alta de Colaboradores</h2><p className="page-sub">Registro de nuevo colaborador · Zavix Brands & Almacenes DC</p></div>
       <div style={{display:'flex',alignItems:'center',marginBottom:30}}>
         {STEPS.map((s,i)=>(
